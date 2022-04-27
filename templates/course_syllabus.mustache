@@ -1,0 +1,67 @@
+{{!
+   This file is part of Moodle - http://moodle.org/
+
+   Moodle is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   Moodle is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+ }}
+{{!
+  @local_envasyllabus/course_syllabus
+
+  Syllabus templated
+
+  The purpose of this template is to output the syllabus of a course
+
+  Classes required for JS:
+
+  Data attributes required for JS:
+
+  Context variables required for this template:
+
+  Example context (json):
+  {
+
+  }
+
+}}
+
+<div class="local-envasyllabus-course-syllabus">
+    <h3 class="syllabus-title">{{#str}}syllabuspage:title, local_envasyllabus{{/str}}</h3>
+    <div class="syllabus-fullname text-black-50">{{coursedata.fullname}}</div>
+    {{#manager}}
+        <div class="syllabus-resp text-light">{{#str}}syllabuspage:manager, local_envasyllabus{{/str}}: {{fullname}} ({{email}})</div>{{/manager}}
+    {{>local_envasyllabus/course_syllabus_header}}
+    <div class="syllabus-summary">{{{summary}}}</div>
+    <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:teachers, local_envasyllabus{{/str}}</h3>
+    {{#teachers}}
+        <div class="container">
+            <div class="row">
+                <div class="col-4 span4">
+                    {{#userpicture}}
+                        <div class="myprofileitem picture">
+                            {{{ userpicture }}}
+                        </div>
+                    {{/userpicture}}
+                </div>
+                <div class="col-8 span8 d-flex flex-column">
+                    <div>{{ userfullname }}</div>
+                    <div>{{{ useremail }}}</div>
+                </div>
+            </div>
+        </div>
+    {{/teachers}}
+    <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:competencies, local_envasyllabus{{/str}}</h3>
+    <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:prerequisites, local_envasyllabus{{/str}}</h3>
+    <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:program, local_envasyllabus{{/str}}</h3>
+    <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:vaq, local_envasyllabus{{/str}}</h3>
+    <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:additionalinfos, local_envasyllabus{{/str}}</h3>
+</div>

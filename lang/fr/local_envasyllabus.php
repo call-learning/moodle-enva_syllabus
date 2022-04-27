@@ -26,13 +26,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'ENVA Syllabus';
-$string['enableenvasyllabus'] = 'Activate ENVA Syllabus functionalities';
-$string['enableenvasyllabus_help'] = 'Activate ENVA Syllabus functionalities (additional menus in course)';
-$string['syllabuspage:header'] = 'Syllabus page for Competency Unit (CU)';
-$string['syllabuspage:title'] = 'Syllabus page for Competency Unit (CU)';
-$string['syllabuspage:manager'] = 'Manager';
-$string['syllabuspage:menu'] = 'See Syllabus';
-$string['syllabuspage:departement'] = 'Département de rattachement';
+$string['enableenvasyllabus'] = 'Active le module de syllabus de l\'ENVA';
+$string['enableenvasyllabus_help'] = 'Active le module de syllabus de l\'ENVA (menu additionnel dans les cours)';
+$string['syllabuspage:header'] = 'Fiche de description de l\'unité de compétences (UC)';
+$string['syllabuspage:title'] = 'Fiche de description de l\'unité de compétences (UC)';
+$string['syllabuspage:manager'] = 'Responsable';
+$string['syllabuspage:menu'] = 'Voir Syllabus';
 $string['syllabuspage:student_totalh'] = 'Nombre d\'heures à l\'emploi du temps par étudiant';
 $string['syllabuspage:student_tdh'] = 'Travaux dirigés (TD)';
 $string['syllabuspage:student_tph'] = 'Travaux pratiques (TP)';

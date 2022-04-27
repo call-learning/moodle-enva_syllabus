@@ -27,20 +27,20 @@ global $CFG, $DB, $PAGE;
 // Get submitted parameters.
 $courseid = required_param('id', PARAM_INT);
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    print_error('invalidcourse', 'local_envasyllabus');
+    throw new moodle_exception('invalidcourse', 'local_envasyllabus');
 }
 
 // Check login.
 require_login($courseid, false);
 
-$title = get_string('syllabuspage:title', 'local_envasyllabus', course_format_name($course));
+$title = get_string('syllabuspage:title', 'local_envasyllabus');
 global $OUTPUT;
 $PAGE->set_title($title);
+$PAGE->set_url(new moodle_url('/local/enva_syllabus/syllabuspage.php'));
 $PAGE->set_heading($title);
 $PAGE->set_pagelayout('general');
+$csyllabus = new \local_envasyllabus\output\course_syllabus($courseid);
+$renderer = $PAGE->get_renderer('local_envasyllabus');
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('syllabuspage:header', 'local_envasyllabus', course_format_name($course)));
-$handler = \core_customfield\handler::get_handler('core_course', 'course');
-$data = $handler->get_instance_data($courseid);
-echo $handler->display_custom_fields_data($data);
+echo $renderer->render($csyllabus);
 echo $OUTPUT->footer();
