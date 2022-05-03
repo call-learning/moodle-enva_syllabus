@@ -47,3 +47,4 @@ $string['syllabuspage:prerequisites'] = 'Pré-requis';
 $string['syllabuspage:program'] = 'Programme';
 $string['syllabuspage:vaq'] = 'Validationd des acquis';
 $string['syllabuspage:additionalinfos'] = 'Information complémentaires';
+$string['course:index'] = 'Cours';

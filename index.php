@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * A syllabus page
+ * A list of all syllabus
  *
  * @package     local_envasyllabus
  * @copyright   2022 CALL Learning - Laurent David <laurent@call-learning>
@@ -23,23 +23,18 @@
  */
 require_once(__DIR__ . '/../../config.php');
 global $CFG, $DB, $PAGE;
-// Get submitted parameters.
-$courseid = required_param('id', PARAM_INT);
-if (!$course = $DB->get_record('course', array('id' => $courseid))) {
-    throw new moodle_exception('invalidcourse', 'local_envasyllabus');
-}
 
 // Check login.
-require_login($courseid, true);
+require_login(true);
 
-$title = get_string('syllabuspage:title', 'local_envasyllabus');
+$title = get_string('courses:index', 'local_envasyllabus');
 global $OUTPUT;
 $PAGE->set_title($title);
-$PAGE->set_url(new moodle_url('/local/enva_syllabus/syllabuspage.php'));
+$PAGE->set_url(new moodle_url('/local/enva_syllabus/index.php'));
 $PAGE->set_heading($title);
 $PAGE->set_pagelayout('general');
-$csyllabus = new \local_envasyllabus\output\course_syllabus($courseid);
+$catalog = new \local_envasyllabus\output\catalog();
 $renderer = $PAGE->get_renderer('local_envasyllabus');
 echo $OUTPUT->header();
-echo $renderer->render($csyllabus);
+echo $renderer->render($catalog);
 echo $OUTPUT->footer();

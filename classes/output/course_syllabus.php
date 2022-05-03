@@ -13,11 +13,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 namespace local_envasyllabus\output;
 
 use core_course\external\course_summary_exporter;
 use core_customfield\category;
-use core_customfield\category_controller;
 use core_customfield\field;
 use local_competvetsuivi\matrix\matrix;
 use moodle_exception;
@@ -102,7 +102,7 @@ class course_syllabus implements renderable, \templatable {
             $contextdata->headerdata[] = $headerinfo;
         }
         $contextdata->teachers = [];
-        [$where, $params] = $DB->get_in_or_equal(['responsablecourse', 'editingteacher']);
+        [$where, $params] = $DB->get_in_or_equal(['responsablecourse', 'editingteacher', 'teacher']);
         $teacherroles = $DB->get_fieldset_select('role', 'id', 'archetype ' . $where, $params);
         $teachers = get_role_users($teacherroles, \context_course::instance($this->courseid));
         foreach ($teachers as $teacheruser) {
@@ -111,9 +111,13 @@ class course_syllabus implements renderable, \templatable {
 
             $teacher->userfullname = fullname($teacheruser);
             $teacher->useremail = obfuscate_mailto($teacheruser->email, '');
-            $contextdata->teachers = $teacher;
+            $contextdata->teachers[] = $teacher;
         }
         $contextdata->summary = format_text($contextdata->coursedata->summary, $contextdata->coursedata->summaryformat);
+        $contextdata->competencies = $this->get_cf_displayable_info('uc_competences', $cfdata, $output);
+        $contextdata->prerequisites = $this->get_cf_displayable_info('uc_prerequis', $cfdata, $output);
+        $contextdata->programme = $this->get_cf_displayable_info('uc_programme', $cfdata, $output);
+        $contextdata->vaq = $this->get_cf_displayable_info('uc_validation', $cfdata, $output);
         return $contextdata;
     }
 
@@ -140,6 +144,24 @@ class course_syllabus implements renderable, \templatable {
 
         $renderer = $PAGE->get_renderer('local_competvetsuivi');
         $text = \html_writer::div($renderer->render($progressoverview), "container-fluid w-75");
+    }
+
+    /**
+     * Get field value
+     *
+     * @param string $cfname
+     * @param array $cfdata
+     * @param object $output
+     * @return mixed
+     */
+    protected function get_cf_displayable_info($cfname, $cfdata, $output) {
+        $cffieldvalue = '';
+        foreach ($cfdata as $cfdatacontroller) {
+            if ($cfdatacontroller->get_field()->get('shortname') == $cfname) {
+                $cffieldvalue = $cfdatacontroller->export_value($output);
+            }
+        }
+        return $cffieldvalue;
     }
     /**
      * Manager email
