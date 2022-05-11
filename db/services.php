@@ -15,20 +15,21 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * External services
  *
  * @package     local_envasyllabus
+ * @category    services
  * @copyright   2022 CALL Learning - Laurent David <laurent@call-learning>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->component = 'local_envasyllabus';
-$plugin->release = '0.1.0';
-$plugin->version = 2022020205;
-$plugin->requires = 2020061500;
-$plugin->maturity = MATURITY_ALPHA;
-$plugin->dependencies = array(
-    'local_competvetsuivi' => ANY_VERSION,
-);
+$functions = [
+    'local_envasyllabus_get_courses_by_field' => [
+        'classname' => 'core_course_external',
+        'methodname' => 'get_courses_by_field',
+        'classpath' => 'course/externallib.php',
+        'description' => 'Get courses matching the query',
+        'type' => 'read',
+        'ajax' => true,
+    ],
+];

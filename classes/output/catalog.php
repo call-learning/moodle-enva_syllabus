@@ -30,6 +30,7 @@ class catalog implements renderable, \templatable {
 
     public function export_for_template(renderer_base $output) {
         $context = new stdClass();
+        $context->courses = json_encode(['759', '763']);
         return $context;
     }
 }
