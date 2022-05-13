@@ -83,6 +83,12 @@ const sortCoursesByYearAndSemester = (courses) => {
                     // to a simple url for a plugin.
                     course.courseimageurl = course.overviewfiles[0].fileurl.replace('/webservice', '');
                 }
+                if (course.customfields) {
+                    course.cf = {};
+                    for(const cf of course.customfields) {
+                        course.cf[cf.shortname] = cf;
+                    }
+                }
                 course.viewurl = Config.wwwroot + '/course/view.php?id=' + course.id;
                 sortedCourses[yearValue].semesters[semesterValue].courses.push(course);
             }

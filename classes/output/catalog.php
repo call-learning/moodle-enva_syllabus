@@ -30,6 +30,8 @@ class catalog implements renderable, \templatable {
 
     public function export_for_template(renderer_base $output) {
         $context = new stdClass();
+        $filterform = new \local_envasyllabus\form\catalog_filter_form();
+        $context->filterform = $filterform->render();
         $context->courses = json_encode(['759', '763']);
         return $context;
     }

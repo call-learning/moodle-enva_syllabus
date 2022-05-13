@@ -47,3 +47,5 @@ $string['syllabuspage:program'] = 'Programme';
 $string['syllabuspage:vaq'] = 'Validationd des acquis';
 $string['syllabuspage:additionalinfos'] = 'Information complémentaires';
 $string['course:index'] = 'Cours';
+$string['coursecard:hours'] = '{$a} heures';
+$string['coursecard:credits'] = '{$a} crédits ECTS';

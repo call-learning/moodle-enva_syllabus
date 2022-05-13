@@ -26,38 +26,53 @@
         "sort": "fullname",
     }
 }}
-<div id="catalog-course-category-{{uniqid}}">
+<div id="catalog-course-category-{{uniqid}}" class="local-envasyllabus-ccat">
     {{#sortedCourses}}
         {{#semesters}}
-            <div class="card-group" role="list">
+            <div class="card-group container" role="list">
                 <div class="row-fluid">
                     {{#courses}}
-                        <div class="col-4 span4">
-                            <div class="card course-card" role="listitem" data-course-id="{{{id}}}" data-view-url="{{viewurl}}" style="max-width: 18rem;">
+                        <div class="col-3 span3">
+                            <div class="card course-card" role="listitem" data-course-id="{{{id}}}" data-view-url="{{viewurl}}">
                                 <img class="card-img-top card-img img-fluid course-img" src="{{courseimageurl}}" alt="{{#str}}aria:courseimage, core_course{{/str}}">
-                                <div class="card-body" id="course-info-container-{{id}}-{{uniqid}}">
-                                    <div class="d-flex align-items-start">
-                                        <div class="w-100 text-truncate">
-                                            <div class="text-muted muted d-flex mb-1 flex-wrap">
-                                        <span class="sr-only">
-                                            {{#str}}aria:courseshortname, core_course{{/str}}
-                                        </span>
-                                                <div>
-                                                    {{{shortname}}}
-                                                </div>
-                                            </div>
-                                            <a href="{{viewurl}}" class="aalink coursename mr-2">
+
+                                <div class="text-muted muted d-flex mb-1 flex-wrap">
                                     <span class="sr-only">
-                                        {{#str}}aria:coursename, core_course{{/str}}
+                                        {{#str}}aria:courseshortname, core_course{{/str}}
                                     </span>
-                                                {{$coursename}}{{/coursename}}
-                                            </a>
+                                    <div class="cshortname bg-dark text-white headline-v2 d-inline p-2">
+                                        {{{shortname}}}
+                                    </div>
+                                </div>
+                                <div class="card-body p-2" id="course-info-container-{{id}}-{{uniqid}}">
+                                    <div class="d-flex align-items-start p-b-1">
+                                        <div class="w-100 text-truncate">
+                                            <span class="sr-only ">
+                                                {{#str}}aria:coursename, core_course{{/str}}
+                                            </span>
+                                            <span class="font-weight-bold">
+                                                {{fullname}}
+                                            </span>
                                             {{^visible}}
                                                 <div class="d-flex flex-wrap">
                                                     <span class="tag tag-info">{{#str}} hiddenfromstudents {{/str}}</span>
                                                 </div>
                                             {{/visible}}
                                         </div>
+                                    </div>
+                                    <div>
+                                        {{#cf.uc_total_heures_enseignants.value}}
+                                            <span>
+                                                <i class="icon text-primary fa fa-clock-o" title="{{cf.uc_total_heures_enseignants.name}}"></i>
+                                                {{#str}}coursecard:hours, local_envasyllabus, {{cf.uc_total_heures_enseignants.value}}{{/str}}
+                                            </span>
+                                        {{/cf.uc_total_heures_enseignants.value}}
+                                        {{#cf.uc_ects.value}}
+                                            <span>
+                                                <i class="icon text-primary fa fa-trophy" title="{{cf.uc_ects.name}}"></i>
+                                                {{#str}}coursecard:credits, local_envasyllabus, {{cf.uc_ects.value}}{{/str}}
+                                            </span>
+                                        {{/cf.uc_ects.value}}
                                     </div>
                                 </div>
                             </div>
@@ -68,4 +83,12 @@
         {{/semesters}}
     {{/sortedCourses}}
 </div>
+{{#js}}
+    document.getElementById('catalog-course-category-{{uniqid}}').querySelectorAll('.card.course-card').forEach(
+    (e) => {
+        e.onclick = () => {
+        window.location = e.dataset.viewUrl;
+        };
+    });
+{{/js}}
 

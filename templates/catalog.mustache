@@ -27,6 +27,9 @@
     }
 }}
 <div id="catalog-{{uniqid}}">
+    <div data-region="catalog-filter" >
+        {{{filterform}}}
+    </div>
     <div data-region="catalog-view-content"  id="catalog-content-{{uniqid}}">
         <div class="catalog-courses" data-courses="{{courses}}">
         </div>
