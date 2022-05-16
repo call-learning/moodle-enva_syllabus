@@ -29,39 +29,49 @@ class catalog_filter_form extends \moodleform {
     const FIELDS_SORT = [
         'startdate',
         'enddate',
+        'fullname'
+    ];
+
+    const SORT_ORDER = [
+        'asc',
+        'desc'
     ];
 
     protected function definition() {
         $mform = $this->_form;
         $mform->addElement('header', get_string('catalog:filter', 'local_envasyllabus'));
         foreach (self::FIELDS_FILTERS as $cfname) {
-            $mform->addElement('select', $cfname,
+            $filtername = 'filter_' . $cfname;
+            $mform->addElement('select', $filtername,
                 get_string('cf:' . $cfname, 'local_envasyllabus'),
                 $this->get_customfield_choices($cfname)
             );
-            $mform->setType($cfname, PARAM_ALPHAEXT);
+            $mform->setType($filtername, PARAM_ALPHAEXT);
         }
         $mform->addElement('header', get_string('catalog:sort', 'local_envasyllabus'));
-        foreach (self::FIELDS_SORT as $sorttype) {
-            $sorttypes = [];
-            foreach (['asc', 'dsc'] as $sortorder) {
-                $sorttypes["$sorttype-$sortorder"] = get_string('sort' . $sorttype . strtolower($sortorder), 'local_envasyllabus');
+        $sorttypes = [];
+        foreach (self::FIELDS_SORT as $sortfield) {
+            foreach (self::SORT_ORDER as $sortorder) {
+                $sorttypes["{$sortfield}-{$sortorder}"] = get_string($sortfield, 'local_envasyllabus') . ' '
+                    . ' - '. get_string('sortorder' . $sortorder, 'local_envasyllabus');
             }
-            $mform->addElement('select', $sorttype,
-                get_string('sort:' . $sorttype, 'local_envasyllabus'),
-                $sorttypes
-            );
-            $mform->setType($cfname, PARAM_ALPHAEXT);
         }
+        $mform->addElement('select', 'sort',
+            get_string('sort', 'local_envasyllabus'),
+            $sorttypes
+        );
+        $mform->setType('sort', PARAM_ALPHAEXT);
         $this->add_action_buttons(null, get_string('search'));
     }
 
     protected function get_customfield_choices($cfsname) {
         $field = field::get_record(['shortname' => $cfsname]);
         $controller = field_controller::create($field->get('id'));
+        $options = [];
         if (method_exists($controller, 'get_options_array')) {
-            return \customfield_select\field_controller::get_options_array($controller);
+            $options = \customfield_select\field_controller::get_options_array($controller);
         };
-        return [];
+        $options = key($options);
+        return $options;
     }
 }

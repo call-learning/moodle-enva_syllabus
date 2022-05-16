@@ -27,8 +27,13 @@
     }
 }}
 <div id="catalog-{{uniqid}}">
-    <div data-region="catalog-filter" >
+    <div data-region="catalog-filter" id="catalog-filter-{{uniqid}}">
         {{{filterform}}}
+        {{#js}}
+            require(['local_envasyllabus/filtersort'],function(FilterSort) {
+                FilterSort.init('catalog-filter-{{uniqid}}');
+            });
+        {{/js}}
     </div>
     <div data-region="catalog-view-content"  id="catalog-content-{{uniqid}}">
         <div class="catalog-courses" data-courses="{{courses}}">
