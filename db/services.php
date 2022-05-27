@@ -24,10 +24,9 @@
  */
 
 $functions = [
-    'local_envasyllabus_get_courses_by_field' => [
-        'classname' => 'core_course_external',
-        'methodname' => 'get_courses_by_field',
-        'classpath' => 'course/externallib.php',
+    'local_envasyllabus_get_filtered_courses' => [
+        'classname' => 'local_envasyllabus\external\get_filtered_courses',
+        'methodname' => 'execute',
         'description' => 'Get courses matching the query',
         'type' => 'read',
         'ajax' => true,

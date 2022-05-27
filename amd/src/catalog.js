@@ -29,20 +29,21 @@ import Config from 'core/config';
 /**
  * Initialise catalog
  *
- * @param catalogTagId
+ * @param {int} catalogTagId
  */
 export const init = (catalogTagId) => {
     const catalogNode = document.getElementById(catalogTagId);
     const catalogCourseTag = catalogNode.querySelector('.catalog-courses');
-    const coursesIds = JSON.parse(catalogCourseTag.dataset.courses);
-    repository.getCoursesFromIds(coursesIds).then((data) => renderCourses(catalogNode, data.courses)).catch(displayException);
+    const rootCategoryId = JSON.parse(catalogCourseTag.dataset.categoryRootId);
+    repository.getCoursesForCategoryId(rootCategoryId).then(
+        (courses) => renderCourses(catalogNode, courses)).catch(displayException);
 };
 
 /**
  * Render all courses
  *
- * @param element element to render into
- * @param courses list of courses with data
+ * @param {Object} element element to render into
+ * @param {Array} courses list of courses with data
  */
 const renderCourses = (element, courses) => {
     Templates.render('local_envasyllabus/catalog_course_categories', {
@@ -55,8 +56,8 @@ const renderCourses = (element, courses) => {
 /**
  * Sort courses by year and semester
  *
- * @param courses courses
- * @returns Array
+ * @param {Array} courses
+ * @returns {{year: *, semesters: *}[]}
  */
 const sortCoursesByYearAndSemester = (courses) => {
     let sortedCourses = {};
@@ -77,11 +78,6 @@ const sortCoursesByYearAndSemester = (courses) => {
                         year: yearValue,
                         courses: []
                     };
-                }
-                if (course.overviewfiles && course.overviewfiles.length > 0) {
-                    // Hack here: We just want to change from webservice url that need a token.
-                    // to a simple url for a plugin.
-                    course.courseimageurl = course.overviewfiles[0].fileurl.replace('/webservice', '');
                 }
                 if (course.customfields) {
                     course.cf = {};
@@ -108,9 +104,9 @@ const sortCoursesByYearAndSemester = (courses) => {
 /**
  * Retrieve the value of a give customfield from course data
  *
- * @param course course data
- * @param cfsname shortname for customfield
- * @param defaultValue
+ * @param {Object} course course data
+ * @param {string} cfsname shortname for customfield
+ * @param {null|Object|int|String} defaultValue
  * @returns null|Object|int|String
  */
 const findValueForCustomField = (course, cfsname, defaultValue=null) => {

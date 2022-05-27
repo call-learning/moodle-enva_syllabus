@@ -43,3 +43,4 @@ $renderer = $PAGE->get_renderer('local_envasyllabus');
 echo $OUTPUT->header();
 echo $renderer->render($csyllabus);
 echo $OUTPUT->footer();
+// See local/envasyllabus/syllabuspage.php?id=801 .

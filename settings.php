@@ -23,17 +23,43 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_envasyllabus\output\catalog;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
     // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedIf
+    // General settings.
+    $pagedesc = get_string('generalsettings', 'local_envasyllabus');
+    $generalsettingspage = new admin_settingpage('envasyllabusgeneral',
+        $pagedesc,
+        'moodle/site:config',
+        empty($CFG->enableenvasyllabus));
+
+    $ADMIN->add('localplugins', $generalsettingspage);
     if ($ADMIN->fulltree) {
-        // TODO: Define the plugin settings page - {@link https://docs.moodle.org/dev/Admin_settings}.
+        if (!during_initial_install()) {
+            $categories = array_map(function ($cat) {
+                return $cat->get_formatted_name();
+            },
+                core_course_category::get_all()
+            );
+            $settingname = get_string('rootcategoryid', 'local_envasyllabus');
+            $settingdescription = get_string('rootcategoryid_desc', 'local_envasyllabus');
+            $rootcategoryid = new admin_setting_configselect(
+                'local_envasyllabus/rootcategoryid',
+                $settingname,
+                $settingdescription,
+                catalog::DEFAULT_COURSE_CATEGORY,
+                $categories
+            );
+            $generalsettingspage->add($rootcategoryid);
+        }
     }
     $optionalsubsystems = $ADMIN->locate('optionalsubsystems');
     $optionalsubsystems->add(new admin_setting_configcheckbox('enableenvasyllabus',
-                    new lang_string('enableenvasyllabus', 'local_enableenvasyllabus'),
-                    new lang_string('enableenvasyllabus_help', 'local_enableenvasyllabus'),
-                    1)
+            new lang_string('enableenvasyllabus', 'local_envasyllabus'),
+            new lang_string('enableenvasyllabus_help', 'local_envasyllabus'),
+            1)
     );
 }

@@ -23,13 +23,13 @@
 
 import Ajax from 'core/ajax';
 
-export const getCoursesFromIds = function(coursesId) {
+export const getCoursesForCategoryId = function(rootCategoryId, criteria = {}) {
 
     let request = {
-        methodname: 'local_envasyllabus_get_courses_by_field',
+        methodname: 'local_envasyllabus_get_filtered_courses',
         args: {
-            field: 'ids',
-            value : coursesId.join(',')
+            rootcategoryid: rootCategoryId,
+            criteria : criteria
         }
     };
 

@@ -42,9 +42,11 @@ class catalog_filter_form extends \moodleform {
         $mform->addElement('header', get_string('catalog:filter', 'local_envasyllabus'));
         foreach (self::FIELDS_FILTERS as $cfname) {
             $filtername = 'filter_' . $cfname;
+            $choices = $this->get_customfield_choices($cfname);
             $mform->addElement('select', $filtername,
                 get_string('cf:' . $cfname, 'local_envasyllabus'),
-                $this->get_customfield_choices($cfname)
+                $choices
+
             );
             $mform->setType($filtername, PARAM_ALPHAEXT);
         }
@@ -71,7 +73,7 @@ class catalog_filter_form extends \moodleform {
         if (method_exists($controller, 'get_options_array')) {
             $options = \customfield_select\field_controller::get_options_array($controller);
         };
-        $options = key($options);
+        $options = array_combine($options, $options);
         return $options;
     }
 }

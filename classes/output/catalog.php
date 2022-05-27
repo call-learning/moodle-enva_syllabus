@@ -23,16 +23,24 @@ use stdClass;
 /**
  * Catalog page
  */
-class catalog implements renderable, \templatable {
+class catalog implements renderable, \templatable
+{
 
-    public function __construct() {
+    /**
+     * Default course category
+     */
+    const DEFAULT_COURSE_CATEGORY = 124;
+
+    public function __construct()
+    {
     }
 
-    public function export_for_template(renderer_base $output) {
+    public function export_for_template(renderer_base $output)
+    {
         $context = new stdClass();
         $filterform = new \local_envasyllabus\form\catalog_filter_form();
         $context->filterform = $filterform->render();
-        $context->courses = json_encode(['759', '763']);
+        $context->categoryrootid = get_config('local_envasyllabus', 'rootcategoryid');
         return $context;
     }
 }

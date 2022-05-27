@@ -26,8 +26,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'ENVA Syllabus';
+$string['courses:index'] = 'Course Index';
 $string['enableenvasyllabus'] = 'Active le module de syllabus de l\'ENVA';
 $string['enableenvasyllabus_help'] = 'Active le module de syllabus de l\'ENVA (menu additionnel dans les cours)';
+$string['generalsettings'] = 'Enva Syllabus settings';
 $string['syllabuspage:header'] = 'Fiche de description de l\'unité de compétences (UC)';
 $string['syllabuspage:title'] = 'Fiche de description de l\'unité de compétences (UC)';
 $string['syllabuspage:manager'] = 'Responsable';
@@ -51,6 +53,8 @@ $string['coursecard:hours'] = '{$a} heures';
 $string['coursecard:credits'] = '{$a} crédits ECTS';
 $string['cf:uc_annee'] = 'Année';
 $string['cf:uc_semestre'] = 'Semestre';
+$string['rootcategoryid'] = 'Root Category';
+$string['rootcategoryid_desc'] = 'Root Category Description';
 $string['sort'] = 'Tri';
 $string['sortorderasc'] = 'Ascendant';
 $string['sortorderdesc'] = 'Descendant';

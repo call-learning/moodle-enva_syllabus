@@ -44,8 +44,8 @@
                                         {{{shortname}}}
                                     </div>
                                 </div>
-                                <div class="card-body p-2" id="course-info-container-{{id}}-{{uniqid}}">
-                                    <div class="d-flex align-items-start p-b-1">
+                                <div class="card-body p-2 d-flex flex-column" id="course-info-container-{{id}}-{{uniqid}}">
+                                    <div class="d-flex align-items-start p-b-1 flex-grow-1">
                                         <div class="w-100 text-truncate">
                                             <span class="sr-only ">
                                                 {{#str}}aria:coursename, core_course{{/str}}
@@ -60,7 +60,7 @@
                                             {{/visible}}
                                         </div>
                                     </div>
-                                    <div>
+                                    <div class="align-self-end">
                                         {{#cf.uc_total_heures_enseignants.value}}
                                             <span>
                                                 <i class="icon text-primary fa fa-clock-o" title="{{cf.uc_total_heures_enseignants.name}}"></i>
