@@ -33,8 +33,11 @@ class setup {
      * This sets up the basic parameters for this plugin.
      *
      * This function should stay idempotent in any case (several runs results in the same setup).
+     *
+     * @param string $fielddefpath
+     * @return bool
      */
-    public static function install_update($fielddefpath) {
+    public static function install_update(string $fielddefpath):bool {
         if (file_exists($fielddefpath)) {
             $filecontent = file_get_contents($fielddefpath);
             self::create_customfields_fromdef($filecontent);
@@ -60,7 +63,7 @@ class setup {
      * @throws \dml_exception
      * @throws \moodle_exception
      */
-    public static function create_customfields_fromdef($configtext) {
+    public static function create_customfields_fromdef($configtext):void {
         $configs = explode(PHP_EOL, $configtext);
         $csvheader = str_getcsv(array_shift($configs), ';');
         foreach ($configs as $csvrow) {
@@ -75,12 +78,12 @@ class setup {
             if (!$category) {
                 // Create it.
                 $categoryrecord = (object) [
-                        'name' => $field->catname,
-                        'component' => 'core_course',
-                        'area' => 'course',
-                        'itemid' => '0',
-                        'sortorder' => category::count_records() + 1,
-                        'contextid' => \context_system::instance()->id,
+                    'name' => $field->catname,
+                    'component' => 'core_course',
+                    'area' => 'course',
+                    'itemid' => '0',
+                    'sortorder' => category::count_records() + 1,
+                    'contextid' => \context_system::instance()->id,
                 ];
                 $category = category_controller::create(0, $categoryrecord);
                 $category->save();
@@ -97,14 +100,14 @@ class setup {
                 $rfield->save();
             } else {
                 $rfield = \core_customfield\field_controller::create(0, (object) [
-                        'name' => $field->name,
-                        'shortname' => $field->shortname,
-                        'type' => $field->type,
-                        'description' => $field->description,
-                        'sortorder' => $field->sortorder,
-                        'configdata' => $field->configdata
+                    'name' => $field->name,
+                    'shortname' => $field->shortname,
+                    'type' => $field->type,
+                    'description' => $field->description,
+                    'sortorder' => $field->sortorder,
+                    'configdata' => $field->configdata
                 ],
-                        $categorycontroller);
+                    $categorycontroller);
                 $rfield->save();
             }
         }

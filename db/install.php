@@ -30,6 +30,6 @@ use local_envasyllabus\setup;
  */
 function xmldb_local_envasyllabus_install() {
     global $CFG;
-    setup::install_update($CFG->dirroot. '/local/envasyllabus/tests/fixtures/customfields_defs.txt');
+    setup::install_update($CFG->dirroot . '/local/envasyllabus/tests/fixtures/customfields_defs.txt');
     return true;
 }

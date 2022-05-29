@@ -22,7 +22,6 @@
  * @copyright   2022 CALL Learning - Laurent David <laurent@call-learning>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Add navigation for course
@@ -40,16 +39,17 @@ function local_envasyllabus_extend_navigation(global_navigation $navigation) {
             $node = $navigation->find($courseid, navigation_node::TYPE_COURSE);
             $url = new moodle_url('/local/envasyllabus/syllabuspage.php', array('id' => $courseid));
             $newnode = new navigation_node(
-                    [
-                        'text'=> get_string('syllabuspage:menu', 'local_envasyllabus'),
-                        'action' => $url,
-                        'type' =>  navigation_node::TYPE_SETTING,
-                        'icon' => new pix_icon('t/viewdetails', ''),
-                        'key' => 'envasyllabus'
-                    ]
+                [
+                    'text' => get_string('syllabuspage:menu', 'local_envasyllabus'),
+                    'action' => $url,
+                    'type' => navigation_node::TYPE_SETTING,
+                    'icon' => new pix_icon('t/viewdetails', ''),
+                    'key' => 'envasyllabus'
+                ]
             );
             $allkeys = $node->get_children_key_list();
             $node->add_node($newnode, $allkeys[0]);
         }
     }
 }
+

@@ -29,10 +29,12 @@
 <div id="catalog-course-category-{{uniqid}}" class="local-envasyllabus-ccat">
     {{#sortedCourses}}
         {{#semesters}}
+            <h3 class="text-center">{{#str}}
+                course_semester, local_envasyllabus, { "semester": {{#quote}}{{semester}}{{/quote}}, "year": {{#quote}}{{year}}{{/quote}} } {{/str}}</h3>
             <div class="card-group container" role="list">
                 <div class="row-fluid">
                     {{#courses}}
-                        <div class="col-3 span3">
+                        <div class="col-3 span3 course-outer-card">
                             <div class="card course-card" role="listitem" data-course-id="{{{id}}}" data-view-url="{{viewurl}}">
                                 <img class="card-img-top card-img img-fluid course-img" src="{{courseimageurl}}" alt="{{#str}}aria:courseimage, core_course{{/str}}">
 
@@ -60,7 +62,7 @@
                                             {{/visible}}
                                         </div>
                                     </div>
-                                    <div class="align-self-end">
+                                    <div class="align-self-end text-light">
                                         {{#cf.uc_total_heures_enseignants.value}}
                                             <span>
                                                 <i class="icon text-primary fa fa-clock-o" title="{{cf.uc_total_heures_enseignants.name}}"></i>
@@ -86,9 +88,9 @@
 {{#js}}
     document.getElementById('catalog-course-category-{{uniqid}}').querySelectorAll('.card.course-card').forEach(
     (e) => {
-        e.onclick = () => {
-        window.location = e.dataset.viewUrl;
-        };
+    e.onclick = () => {
+    window.location = e.dataset.viewUrl;
+    };
     });
 {{/js}}
 

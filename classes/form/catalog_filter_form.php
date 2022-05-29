@@ -19,43 +19,65 @@ namespace local_envasyllabus\form;
 use core_customfield\field;
 use core_customfield\field_controller;
 
+/**
+ * Course filter form
+ *
+ * @package     local_envasyllabus
+ * @copyright   2022 CALL Learning - Laurent David <laurent@call-learning>
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class catalog_filter_form extends \moodleform {
 
+    /**
+     * Filterable course fields
+     */
     const FIELDS_FILTERS = [
         'uc_annee',
         'uc_semestre',
 
     ];
+    /**
+     * Sortable course field
+     */
     const FIELDS_SORT = [
         'startdate',
         'enddate',
         'fullname'
     ];
 
+    /**
+     * Sort order
+     */
     const SORT_ORDER = [
         'asc',
         'desc'
     ];
 
+    /**
+     * Form definition
+     *
+     * @return void
+     */
     protected function definition() {
         $mform = $this->_form;
-        $mform->addElement('header', get_string('catalog:filter', 'local_envasyllabus'));
+        $mform->addElement('header', 'filter_header', get_string('catalog:filter', 'local_envasyllabus'));
         foreach (self::FIELDS_FILTERS as $cfname) {
             $filtername = 'filter_' . $cfname;
             $choices = $this->get_customfield_choices($cfname);
-            $mform->addElement('select', $filtername,
+            $choices[''] = get_string('all');
+            $mform->addElement('autocomplete', $filtername,
                 get_string('cf:' . $cfname, 'local_envasyllabus'),
-                $choices
-
+                $choices,
+                ['multiple' => true]
             );
             $mform->setType($filtername, PARAM_ALPHAEXT);
         }
-        $mform->addElement('header', get_string('catalog:sort', 'local_envasyllabus'));
+        $mform->addElement('header', 'sort_header', get_string('catalog:sort', 'local_envasyllabus'));
         $sorttypes = [];
         foreach (self::FIELDS_SORT as $sortfield) {
             foreach (self::SORT_ORDER as $sortorder) {
                 $sorttypes["{$sortfield}-{$sortorder}"] = get_string($sortfield, 'local_envasyllabus') . ' '
-                    . ' - '. get_string('sortorder' . $sortorder, 'local_envasyllabus');
+                    . ' - ' . get_string('sortorder' . $sortorder, 'local_envasyllabus');
             }
         }
         $mform->addElement('select', 'sort',
@@ -66,7 +88,15 @@ class catalog_filter_form extends \moodleform {
         $this->add_action_buttons(null, get_string('search'));
     }
 
-    protected function get_customfield_choices($cfsname) {
+    /**
+     * Get customfield as choices
+     *
+     * @param string $cfsname
+     * @return array|false
+     * @throws \coding_exception
+     * @throws \moodle_exception
+     */
+    protected function get_customfield_choices(string $cfsname) {
         $field = field::get_record(['shortname' => $cfsname]);
         $controller = field_controller::create($field->get('id'));
         $options = [];

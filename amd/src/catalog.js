@@ -32,13 +32,21 @@ import Config from 'core/config';
  * @param {int} catalogTagId
  */
 export const init = (catalogTagId) => {
+    refreshCoursesList(catalogTagId);
+    document.addEventListener('enva-syllabus-catalog-filter', (eventData) => {
+        if (eventData.detail) {
+            refreshCoursesList(catalogTagId, eventData.detail);
+        }
+    });
+};
+
+const refreshCoursesList = (catalogTagId, filterParams = {}) => {
     const catalogNode = document.getElementById(catalogTagId);
     const catalogCourseTag = catalogNode.querySelector('.catalog-courses');
     const rootCategoryId = JSON.parse(catalogCourseTag.dataset.categoryRootId);
-    repository.getCoursesForCategoryId(rootCategoryId).then(
-        (courses) => renderCourses(catalogNode, courses)).catch(displayException);
+    repository.getCoursesForCategoryId(rootCategoryId, filterParams).then(
+        (courses) => renderCourses(catalogCourseTag, courses)).catch(displayException);
 };
-
 /**
  * Render all courses
  *
@@ -61,7 +69,7 @@ const renderCourses = (element, courses) => {
  */
 const sortCoursesByYearAndSemester = (courses) => {
     let sortedCourses = {};
-    for(let course of courses.values()) {
+    for (let course of courses.values()) {
         const yearValue = findValueForCustomField(course, 'uc_annee');
         const semesterValue = findValueForCustomField(course, 'uc_semestre');
         if (yearValue) {
@@ -81,9 +89,9 @@ const sortCoursesByYearAndSemester = (courses) => {
                 }
                 if (course.customfields) {
                     course.cf = {};
-                    for(const cf of course.customfields) {
+                    course.customfields.forEach((cf) => {
                         course.cf[cf.shortname] = cf;
-                    }
+                    });
                 }
                 course.viewurl = Config.wwwroot + '/course/view.php?id=' + course.id;
                 sortedCourses[yearValue].semesters[semesterValue].courses.push(course);
@@ -109,7 +117,7 @@ const sortCoursesByYearAndSemester = (courses) => {
  * @param {null|Object|int|String} defaultValue
  * @returns null|Object|int|String
  */
-const findValueForCustomField = (course, cfsname, defaultValue=null) => {
+const findValueForCustomField = (course, cfsname, defaultValue = null) => {
     if (typeof course.customfields !== 'undefined') {
         for (let cf of course.customfields.values()) {
             if (cf.shortname === cfsname) {

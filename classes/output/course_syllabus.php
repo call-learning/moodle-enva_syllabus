@@ -29,7 +29,6 @@ use stdClass;
  * Course Syllabus renderable implementation
  *
  * @package     local_envasyllabus
- * @category    admin
  * @copyright   2022 CALL Learning - Laurent David <laurent@call-learning>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -58,7 +57,8 @@ class course_syllabus implements renderable, \templatable {
     /**
      * Constructor
      *
-     * @param $courseid
+     * @param int $courseid
+     * @param int $mode
      */
     public function __construct(int $courseid, int $mode = self::DISPLAY_FULL) {
         $this->courseid = $courseid;
@@ -114,15 +114,30 @@ class course_syllabus implements renderable, \templatable {
             $contextdata->teachers[] = $teacher;
         }
         $contextdata->summary = format_text($contextdata->coursedata->summary, $contextdata->coursedata->summaryformat);
-        $contextdata->competencies = $this->get_cf_displayable_info('uc_competences', $cfdata, $output);
+        $matrixid = $customfields['uc_matrix'] ?? get_config('local_envasyllabus', 'defaultmatrixid');
+        $contextdata->competencies = (object) [
+            'graph' => $this->get_graph_for_course($customfields['uc_nombre'], $matrixid, $output),
+            'description' => $this->get_cf_displayable_info('uc_competences', $cfdata, $output)
+        ];
         $contextdata->prerequisites = $this->get_cf_displayable_info('uc_prerequis', $cfdata, $output);
         $contextdata->programme = $this->get_cf_displayable_info('uc_programme', $cfdata, $output);
         $contextdata->vaq = $this->get_cf_displayable_info('uc_validation', $cfdata, $output);
         return $contextdata;
     }
 
-    protected function get_graph_for_course($uename) {
+    /**
+     * Get graph for course
+     *
+     * @param string $uename
+     * @param int $matrixid
+     * @param \renderer_base $output
+     * @return string
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    protected function get_graph_for_course(string $uename, int $matrixid, \renderer_base $output) {
         $matrix = new matrix($matrixid);
+        $matrix->load_data();
         try {
             $ue = $matrix->get_matrix_ue_by_criteria('shortname', $uename);
         } catch (moodle_exception $e) {
@@ -136,14 +151,13 @@ class course_syllabus implements renderable, \templatable {
             $currentcomp = $matrix->comp[$currentcompid];
         }
 
-        $progressoverview = new \local_competvetsuivi\renderable\uevscompetency_details(
+        $progressoverview = new \local_competvetsuivi\renderable\uevscompetency_summary(
             $matrix,
             $ue->id,
             $currentcomp
         );
-
-        $renderer = $PAGE->get_renderer('local_competvetsuivi');
-        $text = \html_writer::div($renderer->render($progressoverview), "container-fluid w-75");
+        $text = \html_writer::div($output->render($progressoverview), "container-fluid w-75");
+        return $text;
     }
 
     /**
@@ -151,10 +165,10 @@ class course_syllabus implements renderable, \templatable {
      *
      * @param string $cfname
      * @param array $cfdata
-     * @param object $output
+     * @param \renderer_base $output
      * @return mixed
      */
-    protected function get_cf_displayable_info($cfname, $cfdata, $output) {
+    protected function get_cf_displayable_info(string $cfname, array $cfdata, \renderer_base $output) {
         $cffieldvalue = '';
         foreach ($cfdata as $cfdatacontroller) {
             if ($cfdatacontroller->get_field()->get('shortname') == $cfname) {
@@ -163,6 +177,7 @@ class course_syllabus implements renderable, \templatable {
         }
         return $cffieldvalue;
     }
+
     /**
      * Manager email
      */

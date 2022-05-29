@@ -31,17 +31,17 @@
         {{{filterform}}}
         {{#js}}
             require(['local_envasyllabus/filtersort'],function(FilterSort) {
-                FilterSort.init('catalog-filter-{{uniqid}}');
+            FilterSort.init('catalog-filter-{{uniqid}}');
             });
         {{/js}}
     </div>
-    <div data-region="catalog-view-content"  id="catalog-content-{{uniqid}}">
+    <div data-region="catalog-view-content" id="catalog-content-{{uniqid}}">
         <div class="catalog-courses" data-category-root-id="{{categoryrootid}}">
         </div>
     </div>
 </div>
 {{#js}}
     require(['local_envasyllabus/catalog'],function(Catalog) {
-        Catalog.init('catalog-content-{{uniqid}}');
+    Catalog.init('catalog-content-{{uniqid}}');
     });
 {{/js}}

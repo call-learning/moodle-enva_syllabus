@@ -38,15 +38,18 @@
     <h3 class="syllabus-title">{{#str}}syllabuspage:title, local_envasyllabus{{/str}}</h3>
     <div class="syllabus-fullname text-black-50">{{coursedata.fullname}}</div>
     {{#manager}}
-        <div class="syllabus-resp text-light">{{#str}}syllabuspage:manager, local_envasyllabus{{/str}}: {{fullname}} ({{email}})</div>{{/manager}}
+        <div class="syllabus-resp text-light">
+            {{#str}}syllabuspage:manager, local_envasyllabus{{/str}}: {{fullname}} ({{email}})
+        </div>
+    {{/manager}}
     {{>local_envasyllabus/course_syllabus_header}}
     <div class="syllabus-summary">{{{summary}}}</div>
     <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:teachers, local_envasyllabus{{/str}}</h3>
-    <div class="container">
-        <div class="row-fluid">
-            <div class="col-4 span4">
-                {{#teachers}}
-                    <div class="d-flex">
+    <div class="container teacher-list-container">
+        <div class="row">
+            {{#teachers}}
+                <div class="col-3 span3">
+                    <div class="d-flex p-1">
                         <div>
                             {{#userpicture}}
                                 <div class="myprofileitem picture">
@@ -59,18 +62,37 @@
                             <div>{{{ useremail }}}</div>
                         </div>
                     </div>
-                {{/teachers}}
-            </div>
+                </div>
+            {{/teachers}}
         </div>
     </div>
     <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:competencies, local_envasyllabus{{/str}}</h3>
-    {{{competencies}}}
+    <div class="competencies">
+        {{#competencies}}
+            <div class="d-flex">
+                <div>
+                    {{{graph}}}
+                </div>
+                <div>
+                    {{{description}}}
+                </div>
+            </div>
+        {{/competencies}}
+    </div>
     <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:prerequisites, local_envasyllabus{{/str}}</h3>
-    {{{prerequisites}}}
+    <div class="prerequisites">
+        {{{prerequisites}}}
+    </div>
     <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:program, local_envasyllabus{{/str}}</h3>
-    {{{programme}}}
+    <div class="programme">
+        {{{programme}}}
+    </div>
     <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:vaq, local_envasyllabus{{/str}}</h3>
-    {{{vaq}}}
+    <div class="vaq">
+        {{{vaq}}}
+    </div>
     <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:additionalinfos, local_envasyllabus{{/str}}</h3>
-    {{{additionalinfos}}}
+    <div class="additionalinfos">
+        {{{additionalinfos}}}
+    </div>
 </div>

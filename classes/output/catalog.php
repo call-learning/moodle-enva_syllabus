@@ -22,21 +22,26 @@ use stdClass;
 
 /**
  * Catalog page
+ *
+ * @package     local_envasyllabus
+ * @copyright   2022 CALL Learning - Laurent David <laurent@call-learning>
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class catalog implements renderable, \templatable
-{
+class catalog implements renderable, \templatable {
 
     /**
      * Default course category
      */
     const DEFAULT_COURSE_CATEGORY = 124;
 
-    public function __construct()
-    {
-    }
-
-    public function export_for_template(renderer_base $output)
-    {
+    /**
+     * Export for template
+     *
+     * @param renderer_base $output
+     * @return stdClass
+     * @throws \dml_exception
+     */
+    public function export_for_template(renderer_base $output) {
         $context = new stdClass();
         $filterform = new \local_envasyllabus\form\catalog_filter_form();
         $context->filterform = $filterform->render();

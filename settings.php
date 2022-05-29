@@ -39,7 +39,7 @@ if ($hassiteconfig) {
     $ADMIN->add('localplugins', $generalsettingspage);
     if ($ADMIN->fulltree) {
         if (!during_initial_install()) {
-            $categories = array_map(function ($cat) {
+            $categories = array_map(function($cat) {
                 return $cat->get_formatted_name();
             },
                 core_course_category::get_all()
@@ -54,6 +54,26 @@ if ($hassiteconfig) {
                 $categories
             );
             $generalsettingspage->add($rootcategoryid);
+            if (class_exists('\local_competvetsuivi\matrix\matrix')) {
+                global $DB;
+                $matrixall = $DB->get_records_menu(
+                    \local_competvetsuivi\matrix\matrix::CLASS_TABLE, null, 'timemodified ASC', 'id, fullname'
+                );
+                $settingname = get_string('defaultmatrixid', 'local_envasyllabus');
+                $settingdescription = get_string('defaultmatrixid_desc', 'local_envasyllabus');
+                $defaultmatrix = 0;
+                if (!empty($matrixall)) {
+                    $defaultmatrix = $matrixall[array_key_first($matrixall)];
+                }
+                $matrixid = new admin_setting_configselect(
+                    'local_envasyllabus/defaultmatrixid',
+                    $settingname,
+                    $settingdescription,
+                    $defaultmatrix,
+                    $matrixall
+                );
+                $generalsettingspage->add($matrixid);
+            }
         }
     }
     $optionalsubsystems = $ADMIN->locate('optionalsubsystems');

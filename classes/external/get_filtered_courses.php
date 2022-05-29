@@ -22,10 +22,7 @@ global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/course/externallib.php');
 
-use context_course;
-use context_helper;
 use context_system;
-use core_course\external\course_summary_exporter;
 use core_course_external;
 use external_api;
 use external_description;
@@ -44,9 +41,14 @@ use moodle_url;
  * @copyright   2022 CALL Learning - Laurent David <laurent@call-learning>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_filtered_courses extends external_api
-{
-    const TYPE_CFIELD = 'coursefield';
+class get_filtered_courses extends external_api {
+    /**
+     * Filter type : custom field
+     */
+    const TYPE_CUSTOM_FIELD = 'customfield';
+    /**
+     * Filter type : full text
+     */
     const FULL_TEXT_SEARCH = 'fulltext';
 
     /**
@@ -54,20 +56,36 @@ class get_filtered_courses extends external_api
      *
      * @return external_function_parameters
      */
-    public static function execute_parameters()
-    {
+    public static function execute_parameters() {
         return new external_function_parameters(
             [
                 'rootcategoryid' => new external_value(PARAM_INT, 'root category id'),
-                'criteria' =>
+                'filters' =>
                     new external_multiple_structure(
-                        new \external_single_structure(
+                        new external_single_structure(
                             [
                                 'type' => new external_value(PARAM_ALPHA, 'search type'),
-                                'value' => new external_value(PARAM_RAW, 'seach value (json enconded)'),
+                                'search' => new external_single_structure(
+                                    [
+                                        'field' => new external_value(PARAM_ALPHANUMEXT, 'field name'),
+                                        'value' => new external_value(PARAM_RAW, 'field value'),
+                                    ]
+                                )
                             ]
-                        )
-                    )
+                        ),
+                        'Filters',
+                        VALUE_OPTIONAL
+                    ),
+                'sort' =>
+                    new \external_single_structure(
+                        [
+                            'field' => new external_value(PARAM_ALPHA, 'field type'),
+                            'order' => new external_value(PARAM_ALPHA, 'asc or desc'),
+                        ],
+                        'Sort',
+                        VALUE_OPTIONAL
+                    ),
+
             ]
         );
     }
@@ -76,44 +94,57 @@ class get_filtered_courses extends external_api
      * Get courses
      *
      * @param int $rootcategoryid
-     * @param array $criteria It contains a list of search criteria
+     * @param array|null $filters It contains a list of search filters
+     * @param object|null $sort sort criteria
      * @return array
+     * @throws \invalid_parameter_exception
+     * @throws \restricted_context_exception
      */
-    public static function execute($rootcategoryid, $criteria)
-    {
-        $params = self::validate_parameters(self::execute_parameters(),
-            [
-                'rootcategoryid' => $rootcategoryid,
-                'criteria' => $criteria
-            ]);
+    public static function execute($rootcategoryid, $filters = null, $sort = null) {
+        $paramstocheck = [
+            'rootcategoryid' => $rootcategoryid,
+        ];
+        if ($filters) {
+            $paramstocheck['filters'] = $filters;
+        }
+        if ($sort) {
+            $paramstocheck['sort'] = $sort;
+        }
+        $params = self::validate_parameters(self::execute_parameters(), $paramstocheck);
         self::validate_context(context_system::instance());
-        // First we get all courses matching criteria.
+        // First we get all courses matching filters.
         // Then we filter by visibility...
         $category = \core_course_category::get($params['rootcategoryid']);
         // Get all courses from this category.
         $coursesid = $category->get_courses(['recursive' => true, 'idonly' => true]);
         // Now feed it back to the get_courses.
         $courses = core_course_external::get_courses_by_field(
-                'ids',
-                join(',', $coursesid)
+            'ids',
+            join(',', $coursesid)
         );
         // Filter out course ID = 1.
-        $courses = array_filter($courses['courses'], function ($c) {
+        $courses = array_filter($courses['courses'], function($c) {
             return $c['id'] != SITEID;
         });
-        // Now filter by the criterias.
+        // Now the filter.
         $filteredcourse = [];
 
         foreach ($courses as $c) {
             $cobject = (object) $c;
             $addcourse = true;
-            foreach ($params['criteria'] as $criterion) {
-                switch ($criterion->type) {
-                    case static::TYPE_CFIELD:
-                        $search = json_decode($criterion->value);
-                        if (!empty($cobject->{$search->field})) {
-                            $addcourse = $addcourse && ($cobject->{$search->field} == $search->value);
-                            $addcourse = $addcourse && ($cobject->{$search->field} == $search->value);
+            $coursecustomfields = [];
+            if (!empty($cobject->customfields)) {
+                foreach ($cobject->customfields as $cf) {
+                    $coursecustomfields[$cf['shortname']] = $cf['value'];
+                }
+            }
+            foreach ($params['filters'] as $criterion) {
+                switch ($criterion['type']) {
+                    case static::TYPE_CUSTOM_FIELD:
+                        $search = $criterion['search'];
+                        $searchfield = $search['field'];
+                        if (!empty($coursecustomfields[$searchfield])) {
+                            $addcourse = $addcourse && ($coursecustomfields[$searchfield] == $search['value']);
                         }
                         break;
                     case static::FULL_TEXT_SEARCH:
@@ -122,10 +153,10 @@ class get_filtered_courses extends external_api
                 }
             }
             if ($addcourse) {
-                $listelement  = new \core_course_list_element($cobject);
+                $listelement = new \core_course_list_element($cobject);
                 $cobject->courseimageurl = (new moodle_url('/local/envasyllabus/pix/nocourseimage.jpg'))->out();
                 $overviewfiles = $listelement->get_course_overviewfiles();
-                if($overviewfiles) {
+                if ($overviewfiles) {
                     $file = array_shift($overviewfiles);
                     $cobject->courseimageurl = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(),
                         $file->get_filearea(), null, $file->get_filepath(),
@@ -133,6 +164,20 @@ class get_filtered_courses extends external_api
                 }
                 $filteredcourse[] = $cobject;
             }
+        }
+        if ($sort) {
+            uasort($filteredcourse, function($c1, $c2) use ($sort) {
+                $c1value = $c1->{$sort['field']} ?? '';
+                $c2value = $c2->{$sort['field']} ?? '';
+                $sortfactor = $sort['order'] == 'asc' ? 1 : -1;
+                if (is_string($c1value) && is_string($c2value)) {
+                    return strcmp($c1value, $c2value) * $sortfactor;
+                }
+                if (is_int($c1value) && is_int($c2value)) {
+                    return ($c1value < $c2value) ? -$sortfactor : $sortfactor;
+                }
+                return 0;
+            });
         }
         return $filteredcourse;
     }
