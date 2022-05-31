@@ -1,0 +1,47 @@
+{{!
+   This file is part of Moodle - http://moodle.org/
+
+   Moodle is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   Moodle is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+ }}
+{{!
+  @local_envasyllabus/course_syllabus_collapsible
+
+  Syllabus templated
+
+  The purpose of this template is to output the syllabus of a course
+
+  Classes required for JS:
+
+  Data attributes required for JS:
+
+  Context variables required for this template:
+
+  Example context (json):
+  {
+
+  }
+
+}}
+<div class="course-syllabus-collapsible">
+    <h3 class="syllabus-title headline headline-v2">
+        <div data-toggle="collapse" data-target="#{{$id}}{{/id}}" aria-expanded="true" aria-controls="{{$id}}{{/id}}">
+        {{#pix}}t/up, core{{/pix}}{{$title}}{{/title}}
+        </div>
+    </h3>
+    <div class="container {{type}}-container" id="{{$id}}{{/id}}">
+        <div class="row">
+            {{$content}}{{/content}}
+        </div>
+    </div>
+</div>

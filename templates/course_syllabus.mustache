@@ -44,9 +44,11 @@
     {{/manager}}
     {{>local_envasyllabus/course_syllabus_header}}
     <div class="syllabus-summary">{{{summary}}}</div>
-    <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:teachers, local_envasyllabus{{/str}}</h3>
-    <div class="container teacher-list-container">
-        <div class="row">
+    {{<local_envasyllabus/course_syllabus_collapsible}}
+        {{$id}}teachers-{{uniqid}}{{/id}}
+        {{$type}}teachers{{/type}}
+        {{$title}}{{#str}}syllabuspage:teachers, local_envasyllabus{{/str}}{{/title}}
+        {{$content}}
             {{#teachers}}
                 <div class="col-3 span3">
                     <div class="d-flex p-1">
@@ -64,35 +66,55 @@
                     </div>
                 </div>
             {{/teachers}}
-        </div>
-    </div>
-    <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:competencies, local_envasyllabus{{/str}}</h3>
-    <div class="competencies">
-        {{#competencies}}
-            <div class="d-flex">
-                <div>
-                    {{{graph}}}
+        {{/content}}
+    {{/local_envasyllabus/course_syllabus_collapsible}}
+    {{<local_envasyllabus/course_syllabus_collapsible}}
+        {{$id}}competencies-{{uniqid}}{{/id}}
+        {{$type}}competencies{{/type}}
+        {{$title}}{{#str}}syllabuspage:competencies, local_envasyllabus{{/str}}{{/title}}
+        {{$content}}
+            {{#competencies}}
+                <div class="d-flex">
+                    <div>
+                        {{{graph}}}
+                    </div>
+                    <div>
+                        {{{description}}}
+                    </div>
                 </div>
-                <div>
-                    {{{description}}}
-                </div>
-            </div>
-        {{/competencies}}
-    </div>
-    <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:prerequisites, local_envasyllabus{{/str}}</h3>
-    <div class="prerequisites">
-        {{{prerequisites}}}
-    </div>
-    <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:program, local_envasyllabus{{/str}}</h3>
-    <div class="programme">
-        {{{programme}}}
-    </div>
-    <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:vaq, local_envasyllabus{{/str}}</h3>
-    <div class="vaq">
-        {{{vaq}}}
-    </div>
-    <h3 class="syllabus-title headline headline-v2">{{#str}}syllabuspage:additionalinfos, local_envasyllabus{{/str}}</h3>
-    <div class="additionalinfos">
-        {{{additionalinfos}}}
-    </div>
+            {{/competencies}}
+        {{/content}}
+    {{/local_envasyllabus/course_syllabus_collapsible}}
+    {{<local_envasyllabus/course_syllabus_collapsible}}
+        {{$id}}prerequisites-{{uniqid}}{{/id}}
+        {{$type}}prerequisites{{/type}}
+        {{$title}}{{#str}}syllabuspage:prerequisites, local_envasyllabus{{/str}}{{/title}}
+        {{$content}}
+            {{{prerequisites}}}
+        {{/content}}
+    {{/local_envasyllabus/course_syllabus_collapsible}}
+    {{<local_envasyllabus/course_syllabus_collapsible}}
+        {{$id}}program-{{uniqid}}{{/id}}
+        {{$type}}program{{/type}}
+        {{$title}}{{#str}}syllabuspage:program, local_envasyllabus{{/str}}{{/title}}
+        {{$content}}
+            {{{programme}}}
+        {{/content}}
+    {{/local_envasyllabus/course_syllabus_collapsible}}
+    {{<local_envasyllabus/course_syllabus_collapsible}}
+        {{$id}}vaq-{{uniqid}}{{/id}}
+        {{$type}}vaq{{/type}}
+        {{$title}}{{#str}}syllabuspage:vaq, local_envasyllabus{{/str}}{{/title}}
+        {{$content}}
+            {{{vaq}}}
+        {{/content}}
+    {{/local_envasyllabus/course_syllabus_collapsible}}
+    {{<local_envasyllabus/course_syllabus_collapsible}}
+        {{$id}}additionalinfos-{{uniqid}}{{/id}}
+        {{$type}}additionalinfos{{/type}}
+        {{$title}}{{#str}}syllabuspage:additionalinfos, local_envasyllabus{{/str}}{{/title}}
+        {{$content}}
+            {{{additionalinfos}}}
+        {{/content}}
+    {{/local_envasyllabus/course_syllabus_collapsible}}
 </div>

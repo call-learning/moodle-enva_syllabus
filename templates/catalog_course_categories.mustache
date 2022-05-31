@@ -35,8 +35,8 @@
                 <div class="row-fluid">
                     {{#courses}}
                         <div class="col-3 span3 course-outer-card">
-                            <div class="card course-card" role="listitem" data-course-id="{{{id}}}" data-view-url="{{viewurl}}">
-                                <img class="card-img-top card-img img-fluid course-img" src="{{courseimageurl}}" alt="{{#str}}aria:courseimage, core_course{{/str}}">
+                            <div class="card course-card" role="listitem" data-course-id="{{{id}}}" data-view-url="{{viewurl}}" data-syllabus-url="{{syllabusurl}}">
+                                <img class="card-img-top card-img course-img" src="{{courseimageurl}}" alt="{{#str}}aria:courseimage, core_course{{/str}}">
 
                                 <div class="text-muted muted d-flex mb-1 flex-wrap">
                                     <span class="sr-only">
@@ -86,11 +86,13 @@
     {{/sortedCourses}}
 </div>
 {{#js}}
-    document.getElementById('catalog-course-category-{{uniqid}}').querySelectorAll('.card.course-card').forEach(
-    (e) => {
-    e.onclick = () => {
-    window.location = e.dataset.viewUrl;
-    };
-    });
+    (function() {
+        document.getElementById('catalog-course-category-{{uniqid}}').querySelectorAll('.card.course-card').forEach(
+        (e) => {
+            e.onclick = () => {
+                window.location = e.dataset.syllabusUrl;
+            };
+        });
+    })();
 {{/js}}
 

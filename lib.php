@@ -47,9 +47,20 @@ function local_envasyllabus_extend_navigation(global_navigation $navigation) {
                     'key' => 'envasyllabus'
                 ]
             );
-            $allkeys = $node->get_children_key_list();
-            $node->add_node($newnode, $allkeys[0]);
+            $navigation->add_node($newnode);
         }
+        // Now add the index.
+        $url = new moodle_url('/local/envasyllabus/index.php');
+        $newnode = new navigation_node(
+            [
+                'text' => get_string('catalog:index', 'local_envasyllabus'),
+                'action' => $url,
+                'type' => navigation_node::TYPE_SETTING,
+                'icon' => new pix_icon('t/viewdetails', ''),
+                'key' => 'catalogindex'
+            ]
+        );
+        $navigation->add_node($newnode);
     }
 }
 

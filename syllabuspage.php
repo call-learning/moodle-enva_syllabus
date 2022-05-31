@@ -38,6 +38,11 @@ $PAGE->set_title($title);
 $PAGE->set_url(new moodle_url('/local/enva_syllabus/syllabuspage.php'));
 $PAGE->set_heading($title);
 $PAGE->set_pagelayout('general');
+$viewcoursebtn = new single_button(
+    new moodle_url('/course/view.php', ['id' => $courseid]), get_string('viewcourse', 'local_envasyllabus')
+);
+$viewcoursebutton = $OUTPUT->render($viewcoursebtn);
+$PAGE->set_button($PAGE->button . $viewcoursebutton);
 $csyllabus = new \local_envasyllabus\output\course_syllabus($courseid);
 $renderer = $PAGE->get_renderer('local_envasyllabus');
 echo $OUTPUT->header();

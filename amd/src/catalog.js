@@ -94,6 +94,7 @@ const sortCoursesByYearAndSemester = (courses) => {
                     });
                 }
                 course.viewurl = Config.wwwroot + '/course/view.php?id=' + course.id;
+                course.syllabusurl = Config.wwwroot + '/local/envasyllabus/syllabuspage.php?id=' + course.id;
                 sortedCourses[yearValue].semesters[semesterValue].courses.push(course);
             }
         }
