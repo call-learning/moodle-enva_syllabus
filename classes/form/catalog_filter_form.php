@@ -60,7 +60,8 @@ class catalog_filter_form extends \moodleform {
      */
     protected function definition() {
         $mform = $this->_form;
-        $mform->addElement('header', 'filter_header', get_string('catalog:filter', 'local_envasyllabus'));
+        $mform->addElement('header', 'filter_sort_header', get_string('catalog:filter_sort', 'local_envasyllabus'));
+        $mform->setExpanded('filter_sort_header', false);
         foreach (self::FIELDS_FILTERS as $cfname) {
             $filtername = 'filter_' . $cfname;
             $choices = $this->get_customfield_choices($cfname);
@@ -72,7 +73,6 @@ class catalog_filter_form extends \moodleform {
             );
             $mform->setType($filtername, PARAM_ALPHAEXT);
         }
-        $mform->addElement('header', 'sort_header', get_string('catalog:sort', 'local_envasyllabus'));
         $sorttypes = [];
         foreach (self::FIELDS_SORT as $sortfield) {
             foreach (self::SORT_ORDER as $sortorder) {
@@ -85,7 +85,8 @@ class catalog_filter_form extends \moodleform {
             $sorttypes
         );
         $mform->setType('sort', PARAM_ALPHAEXT);
-        $this->add_action_buttons(null, get_string('search'));
+        $submitlabel = get_string('search');
+        $mform->addElement('submit', 'submitbutton', $submitlabel);
     }
 
     /**

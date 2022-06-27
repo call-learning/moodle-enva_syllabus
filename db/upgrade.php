@@ -23,6 +23,8 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_envasyllabus\setup;
+
 /**
  * Execute local_envasyllabus upgrade from the given old version.
  *
@@ -30,14 +32,17 @@
  * @return bool
  */
 function xmldb_local_envasyllabus_upgrade($oldversion) {
-    global $DB;
-
+    global $DB, $CFG;
     $dbman = $DB->get_manager();
-
     // For further information please read {@link https://docs.moodle.org/dev/Upgrade_API}.
     //
     // You will also have to create the db/install.xml file by using the XMLDB Editor.
     // Documentation for the XMLDB Editor can be found at {@link https://docs.moodle.org/dev/XMLDB_editor}.
+
+    if ($oldversion < 2022020210) {
+        setup::install_update($CFG->dirroot . '/local/envasyllabus/tests/fixtures/customfields_defs.txt');
+        upgrade_plugin_savepoint(true, 2022020210, 'local', 'envasyllabus');
+    }
 
     return true;
 }

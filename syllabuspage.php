@@ -30,7 +30,7 @@ if (!$course = $DB->get_record('course', array('id' => $courseid))) {
 }
 
 // Check login.
-require_login($courseid, true);
+require_course_login(SITEID);
 
 $title = get_string('syllabuspage:title', 'local_envasyllabus');
 global $OUTPUT;
@@ -39,10 +39,15 @@ $PAGE->set_url(new moodle_url('/local/enva_syllabus/syllabuspage.php'));
 $PAGE->set_heading($title);
 $PAGE->set_pagelayout('general');
 $viewcoursebtn = new single_button(
-    new moodle_url('/course/view.php', ['id' => $courseid]), get_string('viewcourse', 'local_envasyllabus')
+    new moodle_url('/course/view.php', ['id' => $courseid]),
+    get_string('viewcourse', 'local_envasyllabus')
 );
-$viewcoursebutton = $OUTPUT->render($viewcoursebtn);
-$PAGE->set_button($PAGE->button . $viewcoursebutton);
+$viewcatalog = new single_button(
+    new moodle_url('/local/envasyllabus/index.php'),
+    get_string('catalog:index', 'local_envasyllabus')
+);
+$additionalbuttons = $OUTPUT->render($viewcatalog) . $OUTPUT->render($viewcoursebtn);
+$PAGE->set_button($PAGE->button . $additionalbuttons);
 $csyllabus = new \local_envasyllabus\output\course_syllabus($courseid);
 $renderer = $PAGE->get_renderer('local_envasyllabus');
 echo $OUTPUT->header();

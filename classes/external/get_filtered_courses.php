@@ -122,29 +122,35 @@ class get_filtered_courses extends external_api {
             'ids',
             join(',', $coursesid)
         );
+        $allcustomfields = \core_course\customfield\course_handler::create()->get_instances_data($coursesid, true);
         // Filter out course ID = 1.
         $courses = array_filter($courses['courses'], function($c) {
             return $c['id'] != SITEID;
         });
         // Now the filter.
         $filteredcourse = [];
-
         foreach ($courses as $c) {
             $cobject = (object) $c;
             $addcourse = true;
-            $coursecustomfields = [];
-            if (!empty($cobject->customfields)) {
-                foreach ($cobject->customfields as $cf) {
-                    $coursecustomfields[$cf['shortname']] = $cf['value'];
-                }
+            $coursecustomfieldsmatcher = [];
+            $cobject->customfields = [];
+            $coursecfs = $allcustomfields[$cobject->id] ?? [];
+            foreach ($coursecfs as $cfdatacontroller) {
+                $coursecustomfieldsmatcher[$cfdatacontroller->get_field()->get('shortname')] = $cfdatacontroller->export_value();
+                $cobject->customfields[] = [
+                    'type' => $cfdatacontroller->get_field()->get('type'),
+                    'value' => $cfdatacontroller->export_value(),
+                    'name' => $cfdatacontroller->get_field()->get('name'),
+                    'shortname' => $cfdatacontroller->get_field()->get('shortname')
+                ];
             }
             foreach ($params['filters'] as $criterion) {
                 switch ($criterion['type']) {
                     case static::TYPE_CUSTOM_FIELD:
                         $search = $criterion['search'];
                         $searchfield = $search['field'];
-                        if (!empty($coursecustomfields[$searchfield])) {
-                            $addcourse = $addcourse && ($coursecustomfields[$searchfield] == $search['value']);
+                        if (!empty($coursecustomfieldsmatcher[$searchfield])) {
+                            $addcourse = $addcourse && ($coursecustomfieldsmatcher[$searchfield] == $search['value']);
                         }
                         break;
                     case static::FULL_TEXT_SEARCH:
@@ -194,6 +200,7 @@ class get_filtered_courses extends external_api {
                     'id' => new external_value(PARAM_INT, 'course id'),
                     'fullname' => new external_value(PARAM_RAW, 'course full name'),
                     'displayname' => new external_value(PARAM_RAW, 'course display name'),
+                    'visible' => new external_value(PARAM_BOOL, 'is course visible', VALUE_OPTIONAL, false),
                     'shortname' => new external_value(PARAM_RAW, 'course short name'),
                     'categoryid' => new external_value(PARAM_INT, 'category id'),
                     'categoryname' => new external_value(PARAM_RAW, 'category name'),

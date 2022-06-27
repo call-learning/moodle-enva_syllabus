@@ -37,11 +37,9 @@
 <div class="local-envasyllabus-course-syllabus">
     <h3 class="syllabus-title">{{#str}}syllabuspage:title, local_envasyllabus{{/str}}</h3>
     <div class="syllabus-fullname text-black-50">{{coursedata.fullname}}</div>
-    {{#manager}}
-        <div class="syllabus-resp text-light">
-            {{#str}}syllabuspage:manager, local_envasyllabus{{/str}}: {{fullname}} ({{email}})
-        </div>
-    {{/manager}}
+    <div class="syllabus-resp text-light">
+        {{#str}}syllabuspage:manager, local_envasyllabus{{/str}}: {{{managers}}}
+    </div>
     {{>local_envasyllabus/course_syllabus_header}}
     <div class="syllabus-summary">{{{summary}}}</div>
     {{<local_envasyllabus/course_syllabus_collapsible}}
