@@ -163,8 +163,8 @@ class course_syllabus implements renderable, \templatable {
             $teacher->userpicture = '';
             $teacher->userfullname = fullname($teacheruser);
             $teacher->useremail = '';
-            if (isset($identityfields['email']) && $teacher->email) {
-                $teacher->useremail = ' ' . obfuscate_mailto($teacher->email, '');
+            if (isset($identityfields['email']) && !empty($teacheruser->email)) {
+                $teacher->useremail = ' ' . obfuscate_mailto($teacheruser->email, '');
             }
             if (user_can_view_profile($teacheruser, $course)) {
                 $teacher->userpicture = $output->user_picture($teacheruser, array('class' => 'userpicture'));
