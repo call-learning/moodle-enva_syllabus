@@ -1,13 +1,56 @@
+/* Competencies style */
+#page-local-envasyllabus-syllabuspage .small-doghnut-legend,
+#page-local-envasyllabus-syllabuspage .small-doghnut {
+    width: 100% !important;
+}
+/* Course page */
 .local-envasyllabus-course-syllabus .syllabus-title {
     font-weight: bold;
-    font-size: x-large;
+    font-size: xx-large;
 }
 
+.local-envasyllabus-course-syllabus .syllabus-data {
+    line-height: normal;
+    width: auto;
+}
+.local-envasyllabus-course-syllabus .syllabus-data  td {
+    border-top: none;
+    padding: 0px 8px;
+}
+.local-envasyllabus-course-syllabus .syllabus-resp {
+    padding: 0.5em 0em 2em;
+}
+.local-envasyllabus-course-syllabus .syllabus-data tr.highlighted-top td,
+.local-envasyllabus-course-syllabus .syllabus-data tr.highlighted-bottom td {
+    font-size: large;
+    font-weight: bolder;
+}
+.local-envasyllabus-course-syllabus .syllabus-data tr.highlighted-top td {
+    padding: 0em 8px 1em;
+}
+.local-envasyllabus-course-syllabus .syllabus-data tr.highlighted-top td {
+    padding: 1em 8px 0em;
+}
 .local-envasyllabus-course-syllabus .syllabus-fullname {
     font-weight: bold;
     font-size: x-large;
 }
+.local-envasyllabus-course-syllabus .syllabus-title .title-caret {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    background-image: url([[pix:local_envasyllabus|caret-down]]);
+    background-repeat: no-repeat;
+    background-position: center;
+}
 
+.local-envasyllabus-course-syllabus .syllabus-title.collapsed .title-caret {
+    background-image: url([[pix:local_envasyllabus|caret-right]]);
+    vertical-align: text-top;
+}
+
+/* Catalog page */
 .local-envasyllabus-ccat .cshortname {
     margin-top: -1.5em;
 }

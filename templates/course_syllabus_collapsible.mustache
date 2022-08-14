@@ -34,10 +34,8 @@
 
 }}
 <div class="course-syllabus-collapsible">
-    <h3 class="syllabus-title headline headline-v2">
-        <div data-toggle="collapse" data-target="#{{$id}}{{/id}}" aria-expanded="true" aria-controls="{{$id}}{{/id}}">
-        {{#pix}}t/up, core{{/pix}}{{$title}}{{/title}}
-        </div>
+    <h3 class="syllabus-title headline-v2 p-1 px-2" data-toggle="collapse" data-target="#{{$id}}{{/id}}" aria-expanded="true" aria-controls="{{$id}}{{/id}}">
+        <span class="title-caret mr-3"></span><span>{{$title}}{{/title}}</span>
     </h3>
     <div class="container {{type}}-container" id="{{$id}}{{/id}}">
         <div class="row">

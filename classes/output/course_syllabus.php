@@ -59,37 +59,30 @@ class course_syllabus implements renderable, \templatable {
      * Cfield definition
      */
     const CF_HEADER_DEFINITION = [
-        ['type' => 'cf', 'fieldname' => 'uc_departement', 'languagestring' => 'syllabuspage:departement',
-            'class' => 'font-weight-bold'],
-        ['type' => 'categorysum', 'languagestring' => 'syllabuspage:student_grand_total_hours', 'class' => 'font-weight-bold',
+        ['type' => 'categorysum', 'languagestring' => 'syllabuspage:student_grand_total_hours', 'class' => 'highlighted-top',
             'positionafter' => true,
             'fields' => [
-                ['type' => 'categorysum', 'languagestring' => 'syllabuspage:student_total_hours', 'class' => 'font-weight-bold',
+                ['type' => 'categorysum', 'languagestring' => 'syllabuspage:student_total_hours', 'class' => 'highlighted-top',
                     'fields' => [
-                        ['type' => 'cf', 'fieldname' => 'uc_heures_cm', 'languagestring' => 'syllabuspage:student_cmh'],
-                        ['type' => 'cf', 'fieldname' => 'uc_heures_td_etudiant',
-                            'languagestring' => 'syllabuspage:student_tdh'],
-                        ['type' => 'cf', 'fieldname' => 'uc_heures_tp_etudiant',
-                            'languagestring' => 'syllabuspage:student_tph'],
-                        ['type' => 'cf', 'fieldname' => 'uc_heures_tpa_etudiant',
-                            'languagestring' => 'syllabuspage:student_tpah'],
-                        ['type' => 'cf', 'fieldname' => 'uc_heures_fmp_etudiant',
-                            'languagestring' => 'syllabuspage:student_fmph'],
+                        ['type' => 'cf', 'fieldname' => 'uc_heures_cm_etudiant'],
+                        ['type' => 'cf', 'fieldname' => 'uc_heures_td_etudiant'],
+                        ['type' => 'cf', 'fieldname' => 'uc_heures_tp_etudiant'],
+                        ['type' => 'cf', 'fieldname' => 'uc_heures_tpa_etudiant'],
+                        ['type' => 'cf', 'fieldname' => 'uc_heures_tc_etudiant'],
+                        ['type' => 'cf', 'fieldname' => 'uc_heures_fmp_etudiant'],
                     ]
                 ],
-                ['type' => 'categorysum', 'languagestring' => 'syllabuspage:student_total_hours_he', 'class' => 'font-weight-bold',
+                ['type' => 'categorysum', 'languagestring' => 'syllabuspage:student_total_hours_he', 'class' => 'highlighted-top',
                     'fields' => [
-                        ['type' => 'cf', 'fieldname' => 'uc_heures_he_aas_etudiant',
-                            'languagestring' => 'syllabuspage:student_aash'],
+                        ['type' => 'cf', 'fieldname' => 'uc_heures_he_aas_etudiant'],
 
-                        ['type' => 'cf', 'fieldname' => 'uc_heures_he_tpers_etudiant',
-                            'languagestring' => 'syllabuspage:student_tpersh'],
+                        ['type' => 'cf', 'fieldname' => 'uc_heures_he_tpers_etudiant'],
                     ]
                 ],
             ]
         ],
         ['type' => 'cf', 'fieldname' => 'uc_ects',
-            'languagestring' => 'syllabuspage:student_ects', 'icon' => 'ects', 'class' => 'font-weight-bold']
+            'languagestring' => 'syllabuspage:student_ects', 'icon' => 'ects', 'class' => 'highlighted-top']
     ];
 
     /**
@@ -148,7 +141,8 @@ class course_syllabus implements renderable, \templatable {
                 $manageroutput = fullname($manager);
 
                 if (isset($identityfields['email']) && $manager->email) {
-                    $manageroutput .= ' ' . obfuscate_mailto($manager->email, '');
+                    $email = obfuscate_mailto($manager->email, '');
+                    $manageroutput .= " ($email)";
                 }
                 $managernames[] = $manageroutput;
             }
@@ -211,11 +205,17 @@ class course_syllabus implements renderable, \templatable {
      * @throws \coding_exception
      */
     protected function get_header_data(array $fieldinfolist, array $customfields): array {
+        $headerdata = [];
         foreach ($fieldinfolist as $fieldinfo) {
             if (!empty($fieldinfo['type'])) {
+                if (empty($fieldinfo['languagestring'])) {
+                    $fielddesc = get_string('syllabuspage:' . $fieldinfo['fieldname'], 'local_envasyllabus');
+                } else {
+                    $fielddesc = get_string($fieldinfo['languagestring'], 'local_envasyllabus');
+                }
                 $headerinfo = $this->create_header_data(
                     $fieldinfo['class'] ?? '',
-                    get_string($fieldinfo['languagestring'], 'local_envasyllabus'),
+                    $fielddesc,
                     $fieldinfo['icon'] ?? '');
                 switch ($fieldinfo['type']) {
                     case 'cf':

@@ -33,7 +33,6 @@ use local_envasyllabus\setup;
  */
 function xmldb_local_envasyllabus_upgrade($oldversion) {
     global $DB, $CFG;
-    $dbman = $DB->get_manager();
     // For further information please read {@link https://docs.moodle.org/dev/Upgrade_API}.
     //
     // You will also have to create the db/install.xml file by using the XMLDB Editor.
@@ -44,5 +43,9 @@ function xmldb_local_envasyllabus_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022020210, 'local', 'envasyllabus');
     }
 
+    if ($oldversion < 2022081310) {
+        setup::install_update($CFG->dirroot . '/local/envasyllabus/tests/fixtures/customfields_defs.txt');
+        upgrade_plugin_savepoint(true, 2022081310, 'local', 'envasyllabus');
+    }
     return true;
 }

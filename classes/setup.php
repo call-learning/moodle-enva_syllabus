@@ -69,7 +69,7 @@ class setup {
         foreach ($configs as $csvrow) {
             $csvrowarray = str_getcsv($csvrow, ';');
             if (count($csvrowarray) != count($csvheader)) {
-                debug("Error: the array should have the same number of columns than the row" . $csvrow);
+                debugging("Error: the array should have the same number of columns than the row" . $csvrow);
                 continue;
             }
             $field = array_combine($csvheader, str_getcsv($csvrow, ';'));

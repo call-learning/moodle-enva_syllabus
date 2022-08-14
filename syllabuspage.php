@@ -25,6 +25,8 @@ require_once(__DIR__ . '/../../config.php');
 global $CFG, $DB, $PAGE;
 // Get submitted parameters.
 $courseid = required_param('id', PARAM_INT);
+$lang = optional_param('lang', '', PARAM_LANG);
+
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
     throw new moodle_exception('invalidcourse', 'local_envasyllabus');
 }
@@ -33,11 +35,13 @@ if (!$course = $DB->get_record('course', array('id' => $courseid))) {
 require_course_login(SITEID);
 
 $title = get_string('syllabuspage:title', 'local_envasyllabus');
-global $OUTPUT;
+global $OUTPUT, $SESSION;
+$currenturl = new moodle_url('/local/envasyllabus/syllabuspage.php', ['id' => $courseid]);
 $PAGE->set_title($title);
-$PAGE->set_url(new moodle_url('/local/enva_syllabus/syllabuspage.php'));
+$PAGE->set_url($currenturl);
 $PAGE->set_heading($title);
 $PAGE->set_pagelayout('general');
+
 $viewcoursebtn = new single_button(
     new moodle_url('/course/view.php', ['id' => $courseid]),
     get_string('viewcourse', 'local_envasyllabus')
@@ -46,11 +50,38 @@ $viewcatalog = new single_button(
     new moodle_url('/local/envasyllabus/index.php'),
     get_string('catalog:index', 'local_envasyllabus')
 );
-$additionalbuttons = $OUTPUT->render($viewcatalog) . $OUTPUT->render($viewcoursebtn);
+
+$enlangurl = new moodle_url($currenturl);
+$enlangurl->param('lang', 'en');
+$switchlangen = new single_button(
+    $enlangurl,
+    get_string('syllabus:lang:english', 'local_envasyllabus'),
+    'post',
+    true
+);
+
+$nolangurl = new moodle_url($currenturl);
+$nolangurl->remove_params(['lang']);
+$switchlangsys = new single_button(
+    $nolangurl,
+    get_string('syllabus:lang:system', 'local_envasyllabus'),
+    'post',
+    true
+);
+
+$additionalbuttons = empty($lang) ? $OUTPUT->render($switchlangen) : $OUTPUT->render($switchlangsys);
+$additionalbuttons .= $OUTPUT->render($viewcatalog) . $OUTPUT->render($viewcoursebtn);
 $PAGE->set_button($PAGE->button . $additionalbuttons);
 $csyllabus = new \local_envasyllabus\output\course_syllabus($courseid);
 $renderer = $PAGE->get_renderer('local_envasyllabus');
 echo $OUTPUT->header();
+if ($lang) {
+    $SESSION->lang = $lang;
+} else {
+    unset($SESSION->lang);
+}
 echo $renderer->render($csyllabus);
+unset($SESSION->lang);
+
 echo $OUTPUT->footer();
 // See local/envasyllabus/syllabuspage.php?id=801 .
