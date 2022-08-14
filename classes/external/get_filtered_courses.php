@@ -43,6 +43,10 @@ use moodle_url;
  */
 class get_filtered_courses extends external_api {
     /**
+     * Small summary length
+     */
+    const SMALL_SUMMARY_LENGTH = 120;
+    /**
      * Filter type : custom field
      */
     const TYPE_CUSTOM_FIELD = 'customfield';
@@ -111,6 +115,7 @@ class get_filtered_courses extends external_api {
             $paramstocheck['sort'] = $sort;
         }
         $params = self::validate_parameters(self::execute_parameters(), $paramstocheck);
+        raise_memory_limit(MEMORY_EXTRA);
         self::validate_context(context_system::instance());
         // First we get all courses matching filters.
         // Then we filter by visibility...
@@ -144,19 +149,30 @@ class get_filtered_courses extends external_api {
                     'shortname' => $cfdatacontroller->get_field()->get('shortname')
                 ];
             }
-            foreach ($params['filters'] as $criterion) {
-                switch ($criterion['type']) {
-                    case static::TYPE_CUSTOM_FIELD:
-                        $search = $criterion['search'];
-                        $searchfield = $search['field'];
-                        if (!empty($coursecustomfieldsmatcher[$searchfield])) {
-                            $addcourse = $addcourse && ($coursecustomfieldsmatcher[$searchfield] == $search['value']);
-                        }
-                        break;
-                    case static::FULL_TEXT_SEARCH:
-
-                        break;
+            if (!empty($params['filters'])) {
+                foreach ($params['filters'] as $criterion) {
+                    switch ($criterion['type']) {
+                        case static::TYPE_CUSTOM_FIELD:
+                            $search = $criterion['search'];
+                            $searchfield = $search['field'];
+                            if (!empty($coursecustomfieldsmatcher[$searchfield])) {
+                                $addcourse = $addcourse && ($coursecustomfieldsmatcher[$searchfield] == $search['value']);
+                            }
+                            break;
+                        case static::FULL_TEXT_SEARCH:
+                            break;
+                    }
                 }
+            }
+            $cobject->smallsummarytext = '';
+            if (!empty($cobject->summary) && !empty($cobject->summaryformat) ) {
+                $cobject->smallsummarytext = html_to_text(format_text($cobject->summary, $cobject->summaryformat));
+                if (strlen($cobject->smallsummarytext) > static::SMALL_SUMMARY_LENGTH) {
+                    $cobject->smallsummarytext =
+                        substr($cobject->smallsummarytext, 0, static::SMALL_SUMMARY_LENGTH)
+                        . "...";
+                }
+
             }
             if ($addcourse) {
                 $listelement = new \core_course_list_element($cobject);
@@ -207,6 +223,7 @@ class get_filtered_courses extends external_api {
                     'sortorder' => new external_value(PARAM_INT, 'Sort order in the category', VALUE_OPTIONAL),
                     'summary' => new external_value(PARAM_RAW, 'summary'),
                     'summaryformat' => new external_format_value('summary'),
+                    'smallsummarytext' => new external_value(PARAM_RAW, 'smallsummarytext'),
                     'summaryfiles' => new external_files('summary files in the summary field', VALUE_OPTIONAL),
                     'overviewfiles' => new external_files('additional overview files attached to this course'),
                     'contacts' => new external_multiple_structure(

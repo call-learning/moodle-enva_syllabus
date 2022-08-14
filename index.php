@@ -36,5 +36,6 @@ $PAGE->set_pagelayout('general');
 $catalog = new \local_envasyllabus\output\catalog();
 $renderer = $PAGE->get_renderer('local_envasyllabus');
 echo $OUTPUT->header();
+echo $OUTPUT->heading($title);
 echo $renderer->render($catalog);
 echo $OUTPUT->footer();

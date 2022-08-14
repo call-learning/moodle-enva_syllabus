@@ -35,9 +35,11 @@
 }}
 
 <div class="local-envasyllabus-course-syllabus-header container">
-    <div class="row">
-        <div class="col-4 span4"><img class="img-fluid" src="{{coursedata.courseimage}}" alt="{{coursedata.fullname}}"></div>
-        <div class="col-8 span8">
+    <div class="d-flex">
+        <div class="m-2">
+            <img class="img-fluid syllabus-header-img" src="{{coursedata.courseimage}}" alt="{{coursedata.fullname}}">
+        </div>
+        <div class="flex-grow-1 m-l-2">
             <table class="table table-borderless syllabus-data">
                 {{#headerdata}}
                     <tr class="{{class}}">

@@ -40,8 +40,6 @@ class catalog_filter_form extends \moodleform {
      * Sortable course field
      */
     const FIELDS_SORT = [
-        'startdate',
-        'enddate',
         'fullname'
     ];
 

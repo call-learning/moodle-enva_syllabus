@@ -43,9 +43,9 @@ function xmldb_local_envasyllabus_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022020210, 'local', 'envasyllabus');
     }
 
-    if ($oldversion < 2022081310) {
+    if ($oldversion < 2022081311) {
         setup::install_update($CFG->dirroot . '/local/envasyllabus/tests/fixtures/customfields_defs.txt');
-        upgrade_plugin_savepoint(true, 2022081310, 'local', 'envasyllabus');
+        upgrade_plugin_savepoint(true, 2022081311, 'local', 'envasyllabus');
     }
     return true;
 }

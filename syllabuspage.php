@@ -70,7 +70,7 @@ $switchlangsys = new single_button(
 );
 
 $additionalbuttons = empty($lang) ? $OUTPUT->render($switchlangen) : $OUTPUT->render($switchlangsys);
-$additionalbuttons .= $OUTPUT->render($viewcatalog) . $OUTPUT->render($viewcoursebtn);
+$additionalbuttons .= $OUTPUT->render($viewcoursebtn) . $OUTPUT->render($viewcatalog);
 $PAGE->set_button($PAGE->button . $additionalbuttons);
 $csyllabus = new \local_envasyllabus\output\course_syllabus($courseid);
 $renderer = $PAGE->get_renderer('local_envasyllabus');

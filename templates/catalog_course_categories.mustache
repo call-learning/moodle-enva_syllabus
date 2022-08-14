@@ -34,51 +34,7 @@
             <div class="card-group container" role="list">
                 <div class="row-fluid">
                     {{#courses}}
-                        <div class="col-3 span3 course-outer-card">
-                            <div class="card course-card" role="listitem" data-course-id="{{{id}}}" data-view-url="{{viewurl}}" data-syllabus-url="{{syllabusurl}}">
-                                <img class="card-img-top card-img course-img" src="{{courseimageurl}}" alt="{{#str}}aria:courseimage, core_course{{/str}}">
-
-                                <div class="text-muted muted d-flex mb-1 flex-wrap">
-                                    <span class="sr-only">
-                                        {{#str}}aria:courseshortname, core_course{{/str}}
-                                    </span>
-                                    <div class="cshortname bg-dark text-white headline-v2 d-inline p-2">
-                                        {{{shortname}}}
-                                    </div>
-                                </div>
-                                <div class="card-body p-2 d-flex flex-column" id="course-info-container-{{id}}-{{uniqid}}">
-                                    <div class="d-flex align-items-start p-b-1 flex-grow-1">
-                                        <div class="w-100 text-wrap">
-                                            <span class="sr-only ">
-                                                {{#str}}aria:coursename, core_course{{/str}}
-                                            </span>
-                                            <span class="font-weight-bold">
-                                                {{fullname}}
-                                            </span>
-                                            {{^visible}}
-                                                <div class="d-flex flex-wrap">
-                                                    <span class="tag tag-info">{{#str}} hiddenfromstudents {{/str}}</span>
-                                                </div>
-                                            {{/visible}}
-                                        </div>
-                                    </div>
-                                    <div class="align-self-end text-light">
-                                        {{#cf.uc_total_heures_enseignants.value}}
-                                            <span>
-                                                <i class="icon text-primary fa fa-clock-o" title="{{cf.uc_total_heures_enseignants.name}}"></i>
-                                                {{#str}}coursecard:hours, local_envasyllabus, {{cf.uc_total_heures_enseignants.value}}{{/str}}
-                                            </span>
-                                        {{/cf.uc_total_heures_enseignants.value}}
-                                        {{#cf.uc_ects.value}}
-                                            <span>
-                                                <i class="icon text-primary fa fa-trophy" title="{{cf.uc_ects.name}}"></i>
-                                                {{#str}}coursecard:credits, local_envasyllabus, {{cf.uc_ects.value}}{{/str}}
-                                            </span>
-                                        {{/cf.uc_ects.value}}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {{>local_envasyllabus/catalog_course}}
                     {{/courses}}
                 </div>
             </div>
@@ -86,13 +42,8 @@
     {{/sortedCourses}}
 </div>
 {{#js}}
-    (function() {
-        document.getElementById('catalog-course-category-{{uniqid}}').querySelectorAll('.card.course-card').forEach(
-        (e) => {
-            e.onclick = () => {
-                window.location = e.dataset.syllabusUrl;
-            };
-        });
-    })();
+    require(['theme_lambda/bootstrap', 'core/log'], function(bootstrap, log) {
+        jQuery('[data-toggle="popover"]').popover();
+    });
 {{/js}}
 

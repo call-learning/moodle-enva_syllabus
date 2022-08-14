@@ -26,7 +26,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'ENVA Syllabus';
-$string['courses:index'] = 'Course Index';
 $string['defaultmatrixid'] = 'Default Matrix ID';
 $string['defaultmatrixid_desc'] = 'Default Matrix ID';
 $string['enableenvasyllabus'] = 'Active le module de syllabus de l\'ENVA';
@@ -55,7 +54,8 @@ $string['syllabuspage:prerequisites'] = 'Pré-requis';
 $string['syllabuspage:program'] = 'Programme';
 $string['syllabuspage:vaq'] = 'Validationd des acquis';
 $string['syllabuspage:additionalinfos'] = 'Information complémentaires';
-$string['course:index'] = 'Cours';
+$string['courses:index'] = 'Le cursus à l\'ENVA';
+$string['course:summary'] = 'Résumé';
 $string['course_semester'] = 'Semestre {$a->semester}: Année {$a->year}';
 $string['coursecard:hours'] = '{$a} heures';
 $string['coursecard:credits'] = '{$a} crédits ECTS';
@@ -71,6 +71,6 @@ $string['sortorderdesc'] = 'Descendant';
 $string['startdate'] = 'Date de début';
 $string['enddate'] = 'Date de fin';
 $string['fullname'] = 'Title';
-$string['viewcourse'] = 'Voir cours';
+$string['viewcourse'] = 'Voir contenu du cours';
 $string['syllabus:lang:english'] = 'Anglais';
 $string['syllabus:lang:system'] = 'Français';
