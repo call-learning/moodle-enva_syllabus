@@ -19,6 +19,7 @@ namespace local_envasyllabus\output;
 use renderable;
 use renderer_base;
 use stdClass;
+use templatable;
 
 /**
  * Catalog page
@@ -27,13 +28,26 @@ use stdClass;
  * @copyright   2022 CALL Learning - Laurent David <laurent@call-learning>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class catalog implements renderable, \templatable {
+class catalog implements renderable, templatable {
 
     /**
      * Default course category
      */
     const DEFAULT_COURSE_CATEGORY = 124;
 
+    /**
+     * @var mixed|string
+     */
+    private $currentlang;
+
+    /**
+     * Current lang
+     *
+     * @param string $currentlang
+     */
+    public function __construct($currentlang = '') {
+        $this->currentlang = $currentlang;
+    }
     /**
      * Export for template
      *
@@ -46,6 +60,7 @@ class catalog implements renderable, \templatable {
         $filterform = new \local_envasyllabus\form\catalog_filter_form();
         $context->filterform = $filterform->render();
         $context->categoryrootid = get_config('local_envasyllabus', 'rootcategoryid');
+        $context->currentlang = $this->currentlang ?? '';
         return $context;
     }
 }

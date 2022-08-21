@@ -32,6 +32,8 @@ use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
+use local_envasyllabus\setup;
+use local_envasyllabus\visibility;
 use moodle_url;
 
 /**
@@ -64,6 +66,7 @@ class get_filtered_courses extends external_api {
         return new external_function_parameters(
             [
                 'rootcategoryid' => new external_value(PARAM_INT, 'root category id'),
+                'currentlang' => new external_value(PARAM_ALPHA, 'Current language code',  VALUE_OPTIONAL, ''),
                 'filters' =>
                     new external_multiple_structure(
                         new external_single_structure(
@@ -89,7 +92,6 @@ class get_filtered_courses extends external_api {
                         'Sort',
                         VALUE_OPTIONAL
                     ),
-
             ]
         );
     }
@@ -98,15 +100,17 @@ class get_filtered_courses extends external_api {
      * Get courses
      *
      * @param int $rootcategoryid
+     * @param object|null $currentlang current selected language (en only supported for now)
      * @param array|null $filters It contains a list of search filters
      * @param object|null $sort sort criteria
      * @return array
      * @throws \invalid_parameter_exception
      * @throws \restricted_context_exception
      */
-    public static function execute($rootcategoryid, $filters = null, $sort = null) {
+    public static function execute($rootcategoryid, $currentlang = '', $filters = null, $sort = null) {
         $paramstocheck = [
             'rootcategoryid' => $rootcategoryid,
+            'currentlang' => $currentlang
         ];
         if ($filters) {
             $paramstocheck['filters'] = $filters;
@@ -140,14 +144,24 @@ class get_filtered_courses extends external_api {
             $coursecustomfieldsmatcher = [];
             $cobject->customfields = [];
             $coursecfs = $allcustomfields[$cobject->id] ?? [];
+            $coursecontext = \context_course::instance($cobject->id);
             foreach ($coursecfs as $cfdatacontroller) {
                 $coursecustomfieldsmatcher[$cfdatacontroller->get_field()->get('shortname')] = $cfdatacontroller->export_value();
-                $cobject->customfields[] = [
-                    'type' => $cfdatacontroller->get_field()->get('type'),
-                    'value' => $cfdatacontroller->export_value(),
-                    'name' => $cfdatacontroller->get_field()->get('name'),
-                    'shortname' => $cfdatacontroller->get_field()->get('shortname')
-                ];
+                $fieldshortname = $cfdatacontroller->get_field()->get('shortname');
+                $canviewfield = visibility::is_customfield_visible($fieldshortname);
+                if ($canviewfield) {
+                    $cobject->customfields[$fieldshortname] = [
+                        'type' => $cfdatacontroller->get_field()->get('type'),
+                        'value' => $cfdatacontroller->export_value(),
+                        'name' => $cfdatacontroller->get_field()->get('name'),
+                        'shortname' => $fieldshortname
+                    ];
+                }
+            }
+            if (!empty($cobject->customfields['uc_titre_'.$currentlang])) {
+                if (!empty($cobject->customfields['uc_titre_'.$currentlang]['value'])) {
+                    $cobject->displayname = $cobject->customfields['uc_titre_' . $currentlang]['value'];
+                }
             }
             if (!empty($params['filters'])) {
                 foreach ($params['filters'] as $criterion) {
@@ -166,7 +180,9 @@ class get_filtered_courses extends external_api {
             }
             $cobject->smallsummarytext = '';
             if (!empty($cobject->summary) && !empty($cobject->summaryformat) ) {
-                $cobject->smallsummarytext = html_to_text(format_text($cobject->summary, $cobject->summaryformat));
+                $cobject->smallsummarytext = html_to_text(format_text($cobject->summary, $cobject->summaryformat, [
+                    'context' => $coursecontext
+                ]));
                 if (strlen($cobject->smallsummarytext) > static::SMALL_SUMMARY_LENGTH) {
                     $cobject->smallsummarytext =
                         substr($cobject->smallsummarytext, 0, static::SMALL_SUMMARY_LENGTH)
@@ -255,4 +271,5 @@ class get_filtered_courses extends external_api {
             )
         );
     }
+
 }

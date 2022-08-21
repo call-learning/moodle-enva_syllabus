@@ -28,7 +28,6 @@ use core_customfield\field;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class setup {
-
     /**
      * This sets up the basic parameters for this plugin.
      *

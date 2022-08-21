@@ -83,6 +83,7 @@
             {{/competencies}}
         {{/content}}
     {{/local_envasyllabus/course_syllabus_collapsible}}
+    {{#prerequisites}}
     {{<local_envasyllabus/course_syllabus_collapsible}}
         {{$id}}prerequisites-{{uniqid}}{{/id}}
         {{$type}}prerequisites{{/type}}
@@ -91,6 +92,8 @@
             {{{prerequisites}}}
         {{/content}}
     {{/local_envasyllabus/course_syllabus_collapsible}}
+    {{/prerequisites}}
+    {{#program}}
     {{<local_envasyllabus/course_syllabus_collapsible}}
         {{$id}}program-{{uniqid}}{{/id}}
         {{$type}}program{{/type}}
@@ -99,6 +102,8 @@
             {{{programme}}}
         {{/content}}
     {{/local_envasyllabus/course_syllabus_collapsible}}
+        {{/program}}
+            {{#vaq}}
     {{<local_envasyllabus/course_syllabus_collapsible}}
         {{$id}}vaq-{{uniqid}}{{/id}}
         {{$type}}vaq{{/type}}
@@ -107,6 +112,8 @@
             {{{vaq}}}
         {{/content}}
     {{/local_envasyllabus/course_syllabus_collapsible}}
+{{/vaq}}
+    {{#additionalinfos}}
     {{<local_envasyllabus/course_syllabus_collapsible}}
         {{$id}}additionalinfos-{{uniqid}}{{/id}}
         {{$type}}additionalinfos{{/type}}
@@ -115,4 +122,5 @@
             {{{additionalinfos}}}
         {{/content}}
     {{/local_envasyllabus/course_syllabus_collapsible}}
+    {{/additionalinfos}}
 </div>

@@ -25,7 +25,6 @@ require_once(__DIR__ . '/../../config.php');
 global $CFG, $DB, $PAGE;
 // Get submitted parameters.
 $courseid = required_param('id', PARAM_INT);
-$lang = optional_param('lang', '', PARAM_LANG);
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
     throw new moodle_exception('invalidcourse', 'local_envasyllabus');
@@ -40,7 +39,10 @@ $currenturl = new moodle_url('/local/envasyllabus/syllabuspage.php', ['id' => $c
 $PAGE->set_title($title);
 $PAGE->set_url($currenturl);
 $PAGE->set_heading($title);
-$PAGE->set_pagelayout('general');
+$renderer = $PAGE->get_renderer('local_envasyllabus');
+
+$languageswitcher = new \local_envasyllabus\output\language_switcher();
+$csyllabus = new \local_envasyllabus\output\course_syllabus($courseid, $languageswitcher->get_current_langcode());
 
 $viewcoursebtn = new single_button(
     new moodle_url('/course/view.php', ['id' => $courseid]),
@@ -50,38 +52,13 @@ $viewcatalog = new single_button(
     new moodle_url('/local/envasyllabus/index.php'),
     get_string('catalog:index', 'local_envasyllabus')
 );
-
-$enlangurl = new moodle_url($currenturl);
-$enlangurl->param('lang', 'en');
-$switchlangen = new single_button(
-    $enlangurl,
-    get_string('syllabus:lang:english', 'local_envasyllabus'),
-    'post',
-    true
-);
-
-$nolangurl = new moodle_url($currenturl);
-$nolangurl->remove_params(['lang']);
-$switchlangsys = new single_button(
-    $nolangurl,
-    get_string('syllabus:lang:system', 'local_envasyllabus'),
-    'post',
-    true
-);
-
-$additionalbuttons = empty($lang) ? $OUTPUT->render($switchlangen) : $OUTPUT->render($switchlangsys);
+$additionalbuttons = $renderer->render($languageswitcher);
 $additionalbuttons .= $OUTPUT->render($viewcoursebtn) . $OUTPUT->render($viewcatalog);
-$PAGE->set_button($PAGE->button . $additionalbuttons);
-$csyllabus = new \local_envasyllabus\output\course_syllabus($courseid);
-$renderer = $PAGE->get_renderer('local_envasyllabus');
-echo $OUTPUT->header();
-if ($lang) {
-    $SESSION->lang = $lang;
-} else {
-    unset($SESSION->lang);
-}
-echo $renderer->render($csyllabus);
-unset($SESSION->lang);
 
+echo $OUTPUT->header();
+echo $OUTPUT->box($additionalbuttons, 'generalbox syllabus-additional-buttons');
+$languageswitcher->set_lang();
+echo $renderer->render($csyllabus);
+$languageswitcher->reset_lang();
 echo $OUTPUT->footer();
 // See local/envasyllabus/syllabuspage.php?id=801 .

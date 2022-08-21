@@ -21,10 +21,12 @@ use core_course\external\course_summary_exporter;
 use core_customfield\category;
 use core_customfield\field;
 use local_competvetsuivi\matrix\matrix;
+use local_envasyllabus\visibility;
 use moodle_exception;
 use renderable;
 use renderer_base;
 use stdClass;
+use templatable;
 
 /**
  * Course Syllabus renderable implementation
@@ -33,17 +35,7 @@ use stdClass;
  * @copyright   2022 CALL Learning - Laurent David <laurent@call-learning>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course_syllabus implements renderable, \templatable {
-
-    /**
-     * Display the course in FULL syllabus mode
-     */
-    const DISPLAY_FULL = 0;
-
-    /**
-     * Display the course in simplified version syllabus mode
-     */
-    const DISPLAY_SIMPLIFIED = 1;
+class course_syllabus implements renderable, templatable {
 
     /**
      * @var array TEACHER_ROLES_NAME
@@ -91,19 +83,20 @@ class course_syllabus implements renderable, \templatable {
     protected $courseid = 0;
 
     /**
-     * @var int $mode display mode
+     * @var string $lang lang display mode
      */
-    protected $mode = 0;
+    protected $lang = '';
 
     /**
      * Constructor
      *
      * @param int $courseid
-     * @param int $mode
+     * @param string $lang
      */
-    public function __construct(int $courseid, int $mode = self::DISPLAY_FULL) {
+    public function __construct(int $courseid, string $lang = '') {
         $this->courseid = $courseid;
-        $this->mode = $mode;
+        $this->lang = $lang;
+
     }
 
     /**
@@ -328,7 +321,12 @@ class course_syllabus implements renderable, \templatable {
      * @return mixed
      */
     protected function get_cf_displayable_info(string $cfname, array $cfdata, \renderer_base $output) {
-        $cffieldvalue = '';
+        if (!visibility::is_customfield_visible($cfname)) {
+            return '';
+        }
+        if (!empty($this->lang)) {
+            $cfname = "{$cfname}_{$this->lang}";
+        }
         foreach ($cfdata as $cfdatacontroller) {
             if ($cfdatacontroller->get_field()->get('shortname') == $cfname) {
                 $cffieldvalue = $cfdatacontroller->export_value($output);

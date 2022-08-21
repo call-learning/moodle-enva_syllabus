@@ -64,3 +64,13 @@ function local_envasyllabus_extend_navigation(global_navigation $navigation) {
     }
 }
 
+/**
+ * Specific icons for the module
+ * @return string[]
+ */
+function local_envasyllabus_get_fontawesome_icon_map() {
+    return [
+        'local_envasyllabus:i/languages' => 'fa-language',
+        'local_envasyllabus:i/arrowview' => 'fa-arrow-circle-o-right',
+    ];
+}

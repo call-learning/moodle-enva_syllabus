@@ -24,6 +24,8 @@
  */
 
 use local_envasyllabus\output\catalog;
+use local_envasyllabus\setup;
+use local_envasyllabus\visibility;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -74,6 +76,15 @@ if ($hassiteconfig) {
                 );
                 $generalsettingspage->add($matrixid);
             }
+            $settingname = get_string('publicfields', 'local_envasyllabus');
+            $settingdescription = get_string('publicfields_desc', 'local_envasyllabus');
+            $publicfields = new admin_setting_configtext(
+                'local_envasyllabus/publicfields',
+                $settingname,
+                $settingdescription,
+                join(',', visibility::PUBLIC_SYLLABUS_FIELDS)
+            );
+            $generalsettingspage->add($rootcategoryid);
         }
     }
     $optionalsubsystems = $ADMIN->locate('optionalsubsystems');

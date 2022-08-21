@@ -62,6 +62,12 @@
     vertical-align: text-top;
 }
 
+
+.syllabus-additional-buttons {
+    float: right;
+    display: flex;
+}
+
 /* Catalog page */
 .local-envasyllabus-ccat .cshortname {
     margin-top: -1.5em;

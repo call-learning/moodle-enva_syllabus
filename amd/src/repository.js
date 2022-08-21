@@ -23,12 +23,20 @@
 
 import Ajax from 'core/ajax';
 
-export const getCoursesForCategoryId = function (rootCategoryId, filterParams = {}) {
+/**
+ *
+ * @param {number} rootCategoryId
+ * @param {object} filterParams
+ * @param {string} currentLang
+ * @returns {*}
+ */
+export const getCoursesForCategoryId = function (rootCategoryId, filterParams = {}, currentLang = '') {
 
     let request = {
         methodname: 'local_envasyllabus_get_filtered_courses',
         args: Object.assign({
-            rootcategoryid: rootCategoryId
+            rootcategoryid: rootCategoryId,
+            currentlang : currentLang
         }, filterParams)
     };
 

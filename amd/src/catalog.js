@@ -44,7 +44,8 @@ const refreshCoursesList = (catalogTagId, filterParams = {}) => {
     const catalogNode = document.getElementById(catalogTagId);
     const catalogCourseTag = catalogNode.querySelector('.catalog-courses');
     const rootCategoryId = JSON.parse(catalogCourseTag.dataset.categoryRootId);
-    repository.getCoursesForCategoryId(rootCategoryId, filterParams).then(
+    const currentLang = catalogCourseTag.dataset.currentLang;
+    repository.getCoursesForCategoryId(rootCategoryId, filterParams, currentLang).then(
         (courses) => renderCourses(catalogCourseTag, courses)).catch(displayException);
 };
 /**
@@ -55,7 +56,7 @@ const refreshCoursesList = (catalogTagId, filterParams = {}) => {
  */
 const renderCourses = (element, courses) => {
     Templates.render('local_envasyllabus/catalog_course_categories', {
-        sortedCourses: sortCoursesByYearAndSemester(courses)
+        sortedCourses: buildCourseList(courses)
     }).then((html, js) => {
         Templates.replaceNodeContents(element, html, js);
     }).catch(displayException);
@@ -64,10 +65,11 @@ const renderCourses = (element, courses) => {
 /**
  * Sort courses by year and semester
  *
+ * Also tweaks the display depending on language selected
  * @param {Array} courses
  * @returns {{year: *, semesters: *}[]}
  */
-const sortCoursesByYearAndSemester = (courses) => {
+const buildCourseList = (courses) => {
     let sortedCourses = {};
     for (let course of courses.values()) {
         const yearValue = findValueForCustomField(course, 'uc_annee');
