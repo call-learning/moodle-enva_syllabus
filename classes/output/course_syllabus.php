@@ -51,6 +51,7 @@ class course_syllabus implements renderable, templatable {
      * Cfield definition
      */
     const CF_HEADER_DEFINITION = [
+        ['type' => 'cf', 'fieldname' => 'uc_departement', 'class' => 'highlighted-top'],
         ['type' => 'categorysum', 'languagestring' => 'syllabuspage:student_grand_total_hours', 'class' => 'highlighted-top',
             'positionafter' => true,
             'fields' => [

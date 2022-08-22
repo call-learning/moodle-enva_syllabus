@@ -32,7 +32,14 @@ import Config from 'core/config';
  * @param {int} catalogTagId
  */
 export const init = (catalogTagId) => {
-    refreshCoursesList(catalogTagId);
+    // TODO: take the initial filter from the form.
+    refreshCoursesList(catalogTagId, {
+        filters: [],
+        sort: {
+            field: 'customfield_uc_annee',
+            order: 'asc'
+        }
+    });
     document.addEventListener('enva-syllabus-catalog-filter', (eventData) => {
         if (eventData.detail) {
             refreshCoursesList(catalogTagId, eventData.detail);
@@ -81,32 +88,38 @@ const buildCourseList = (courses) => {
                     semesters: []
                 };
             }
-            if (semesterValue) {
-                if (!sortedCourses[yearValue].semesters[semesterValue]) {
-                    sortedCourses[yearValue].semesters[semesterValue] = {
-                        semester: semesterValue,
-                        year: yearValue,
-                        courses: []
-                    };
-                }
-                if (course.customfields) {
-                    course.cf = {};
-                    course.customfields.forEach((cf) => {
-                        course.cf[cf.shortname] = cf;
-                    });
-                }
-                course.viewurl = Config.wwwroot + '/course/view.php?id=' + course.id;
-                course.syllabusurl = Config.wwwroot + '/local/envasyllabus/syllabuspage.php?id=' + course.id;
-                sortedCourses[yearValue].semesters[semesterValue].courses.push(course);
+            if (!sortedCourses[yearValue].semesters[semesterValue]) {
+                sortedCourses[yearValue].semesters[semesterValue] = {
+                    semester: semesterValue,
+                    year: yearValue,
+                    courses: []
+                };
             }
+            if (course.customfields) {
+                course.cf = {};
+                course.customfields.forEach((cf) => {
+                    course.cf[cf.shortname] = cf;
+                });
+            }
+            course.viewurl = Config.wwwroot + '/course/view.php?id=' + course.id;
+            course.syllabusurl = Config.wwwroot + '/local/envasyllabus/syllabuspage.php?id=' + course.id;
+            sortedCourses[yearValue].semesters[semesterValue].courses.push(course);
         }
     }
     // Flattern the object into an array.
     return Object.values(sortedCourses).map(
         yearDef => {
+            // Always sort by semesters.
+            const sortedSemesters = Object.keys(yearDef.semesters)
+                .sort()
+                .reduce((acc, key) => {
+                    acc[key] = yearDef.semesters[key];
+                    return acc;
+                }, {});
+
             return {
                 year: yearDef.year,
-                semesters: Object.values(yearDef.semesters)
+                semesters: Object.values(sortedSemesters)
             };
         }
     );

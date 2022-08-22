@@ -40,7 +40,8 @@ class catalog_filter_form extends \moodleform {
      * Sortable course field
      */
     const FIELDS_SORT = [
-        'fullname'
+        'customfield_uc_annee',
+        'fullname',
     ];
 
     /**
@@ -74,7 +75,7 @@ class catalog_filter_form extends \moodleform {
         $sorttypes = [];
         foreach (self::FIELDS_SORT as $sortfield) {
             foreach (self::SORT_ORDER as $sortorder) {
-                $sorttypes["{$sortfield}-{$sortorder}"] = get_string($sortfield, 'local_envasyllabus') . ' '
+                $sorttypes["{$sortfield}-{$sortorder}"] = get_string('sort:'.$sortfield, 'local_envasyllabus') . ' '
                     . ' - ' . get_string('sortorder' . $sortorder, 'local_envasyllabus');
             }
         }
@@ -83,6 +84,7 @@ class catalog_filter_form extends \moodleform {
             $sorttypes
         );
         $mform->setType('sort', PARAM_ALPHAEXT);
+        $mform->setDefault('sort', 'customfield_uc_annee-asc');
         $submitlabel = get_string('search');
         $mform->addElement('submit', 'submitbutton', $submitlabel);
     }

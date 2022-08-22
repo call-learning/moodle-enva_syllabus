@@ -34,11 +34,27 @@ if (!$course = $DB->get_record('course', array('id' => $courseid))) {
 require_course_login(SITEID);
 
 $title = get_string('syllabuspage:title', 'local_envasyllabus');
-global $OUTPUT, $SESSION;
+global $OUTPUT, $SESSION, $USER;
 $currenturl = new moodle_url('/local/envasyllabus/syllabuspage.php', ['id' => $courseid]);
 $PAGE->set_title($title);
 $PAGE->set_url($currenturl);
 $PAGE->set_heading($title);
+$PAGE->set_context(context_course::instance($courseid));
+if ($PAGE->user_allowed_editing()) {
+    $editcoursebutton = new single_button(
+        new moodle_url('/course/edit.php', [
+            'id' => $courseid,
+            'returnto' => 'url',
+            'returnurl' => $currenturl->out_as_local_url(),
+            'sesskey' => sesskey()
+        ],
+            'id_tagshdr'),
+        get_string('editcoursesettings', 'moodle'),
+        'get'
+    );
+    $buttons = $OUTPUT->render($editcoursebutton);
+    $PAGE->set_button($buttons);
+}
 $renderer = $PAGE->get_renderer('local_envasyllabus');
 
 $languageswitcher = new \local_envasyllabus\output\language_switcher();

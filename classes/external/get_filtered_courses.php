@@ -58,45 +58,6 @@ class get_filtered_courses extends external_api {
     const FULL_TEXT_SEARCH = 'fulltext';
 
     /**
-     * Returns description of method parameters
-     *
-     * @return external_function_parameters
-     */
-    public static function execute_parameters() {
-        return new external_function_parameters(
-            [
-                'rootcategoryid' => new external_value(PARAM_INT, 'root category id'),
-                'currentlang' => new external_value(PARAM_ALPHA, 'Current language code',  VALUE_OPTIONAL, ''),
-                'filters' =>
-                    new external_multiple_structure(
-                        new external_single_structure(
-                            [
-                                'type' => new external_value(PARAM_ALPHA, 'search type'),
-                                'search' => new external_single_structure(
-                                    [
-                                        'field' => new external_value(PARAM_ALPHANUMEXT, 'field name'),
-                                        'value' => new external_value(PARAM_RAW, 'field value'),
-                                    ]
-                                )
-                            ]
-                        ),
-                        'Filters',
-                        VALUE_OPTIONAL
-                    ),
-                'sort' =>
-                    new \external_single_structure(
-                        [
-                            'field' => new external_value(PARAM_ALPHA, 'field type'),
-                            'order' => new external_value(PARAM_ALPHA, 'asc or desc'),
-                        ],
-                        'Sort',
-                        VALUE_OPTIONAL
-                    ),
-            ]
-        );
-    }
-
-    /**
      * Get courses
      *
      * @param int $rootcategoryid
@@ -158,8 +119,8 @@ class get_filtered_courses extends external_api {
                     ];
                 }
             }
-            if (!empty($cobject->customfields['uc_titre_'.$currentlang])) {
-                if (!empty($cobject->customfields['uc_titre_'.$currentlang]['value'])) {
+            if (!empty($cobject->customfields['uc_titre_' . $currentlang])) {
+                if (!empty($cobject->customfields['uc_titre_' . $currentlang]['value'])) {
                     $cobject->displayname = $cobject->customfields['uc_titre_' . $currentlang]['value'];
                 }
             }
@@ -179,7 +140,7 @@ class get_filtered_courses extends external_api {
                 }
             }
             $cobject->smallsummarytext = '';
-            if (!empty($cobject->summary) && !empty($cobject->summaryformat) ) {
+            if (!empty($cobject->summary) && !empty($cobject->summaryformat)) {
                 $cobject->smallsummarytext = html_to_text(format_text($cobject->summary, $cobject->summaryformat, [
                     'context' => $coursecontext
                 ]));
@@ -205,8 +166,14 @@ class get_filtered_courses extends external_api {
         }
         if ($sort) {
             uasort($filteredcourse, function($c1, $c2) use ($sort) {
-                $c1value = $c1->{$sort['field']} ?? '';
-                $c2value = $c2->{$sort['field']} ?? '';
+                if (strpos($sort['field'], 'customfield_') === 0) {
+                    $sortfieldname = str_replace('customfield_', '', $sort['field']);
+                    $c1value = $c1->customfields[$sortfieldname]["value"] ?? '';
+                    $c2value = $c2->customfields[$sortfieldname]["value"] ?? '';
+                } else {
+                    $c1value = $c1->{$sort['field']} ?? '';
+                    $c2value = $c2->{$sort['field']} ?? '';
+                }
                 $sortfactor = $sort['order'] == 'asc' ? 1 : -1;
                 if (is_string($c1value) && is_string($c2value)) {
                     return strcmp($c1value, $c2value) * $sortfactor;
@@ -218,6 +185,45 @@ class get_filtered_courses extends external_api {
             });
         }
         return $filteredcourse;
+    }
+
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_function_parameters
+     */
+    public static function execute_parameters() {
+        return new external_function_parameters(
+            [
+                'rootcategoryid' => new external_value(PARAM_INT, 'root category id'),
+                'currentlang' => new external_value(PARAM_ALPHA, 'Current language code', VALUE_OPTIONAL, ''),
+                'filters' =>
+                    new external_multiple_structure(
+                        new external_single_structure(
+                            [
+                                'type' => new external_value(PARAM_ALPHA, 'search type'),
+                                'search' => new external_single_structure(
+                                    [
+                                        'field' => new external_value(PARAM_ALPHANUMEXT, 'field name'),
+                                        'value' => new external_value(PARAM_RAW, 'field value'),
+                                    ]
+                                )
+                            ]
+                        ),
+                        'Filters',
+                        VALUE_OPTIONAL
+                    ),
+                'sort' =>
+                    new \external_single_structure(
+                        [
+                            'field' => new external_value(PARAM_ALPHANUMEXT, 'field type'),
+                            'order' => new external_value(PARAM_ALPHA, 'asc or desc'),
+                        ],
+                        'Sort',
+                        VALUE_OPTIONAL
+                    ),
+            ]
+        );
     }
 
     /**

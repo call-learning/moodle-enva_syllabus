@@ -29,8 +29,14 @@
 <div id="catalog-course-category-{{uniqid}}" class="local-envasyllabus-ccat">
     {{#sortedCourses}}
         {{#semesters}}
+            {{#semester}}
             <h3 class="text-center">{{#str}}
                 course_semester, local_envasyllabus, { "semester": {{#quote}}{{semester}}{{/quote}}, "year": {{#quote}}{{year}}{{/quote}} } {{/str}}</h3>
+            {{/semester}}
+            {{^semester}}
+                <h3 class="text-center">{{#str}}
+                    course_no_semester, local_envasyllabus, {{year}} {{/str}}</h3>
+            {{/semester}}
             <div class="card-group container" role="list">
                 <div class="row-fluid">
                     {{#courses}}

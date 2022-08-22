@@ -41,68 +41,66 @@ export const init = (filterItemId) => {
         }
     });
 };
-
 /**
  * Serialise array for form so to send it to filters
  *
- * @param target
- * @param ignoresesskey
+ * @param {Element} target
+ * @param {{bool}} ignoresesskey
  * @returns {unknown[]|boolean}
  */
 const getFilterData = (target, ignoresesskey) => {
-        let data = jQuery(target).serializeArray();
-        // Check sesskey (if not ignore request).
-        let sesskeyconfirmed = false;
-        let returnedFilter =  {};
+    let data = jQuery(target).serializeArray();
+    // Check sesskey (if not ignore request).
+    let sesskeyconfirmed = false;
+    let returnedFilter = {};
 
-        let filterarray = [];
-        let sortcriteria = {};
-        data.forEach((d) => {
-                if (d.name === 'sesskey') {
-                    sesskeyconfirmed = d.value === Config.sesskey;
-                } else {
-                    if (d.value) {
-                        const filtername = d.name.match(/^filter_([^\[]+)[\[\]]*/);
-                        if (filtername) {
-                            // Specific case for multiselect.
-                            if (d.value !== "_qf__force_multiselect_submission") {
-                                let filtertype = 'customfield';
-                                if (filtername[1].includes('_ftext_')) {
-                                    filtertype = 'fulltext';
-                                }
-                                filterarray.push({
-                                    'type': filtertype,
-                                    'search': {
-                                        'field': filtername[1],
-                                        'value': d.value
-                                    }
-                                });
+    let filterarray = [];
+    let sortcriteria = {};
+    data.forEach((d) => {
+            if (d.name === 'sesskey') {
+                sesskeyconfirmed = d.value === Config.sesskey;
+            } else {
+                if (d.value) {
+                    const filtername = d.name.match(/^filter_([^\[]+)[\[\]]*/);
+                    if (filtername) {
+                        // Specific case for multiselect.
+                        if (d.value !== "_qf__force_multiselect_submission") {
+                            let filtertype = 'customfield';
+                            if (filtername[1].includes('_ftext_')) {
+                                filtertype = 'fulltext';
                             }
+                            filterarray.push({
+                                'type': filtertype,
+                                'search': {
+                                    'field': filtername[1],
+                                    'value': d.value
+                                }
+                            });
                         }
                     }
                 }
             }
-        )
-        ;
-        const sortfield = data.find((d) => d.name === 'sort');
-        if (sortfield && sortfield.value) {
-            const sortfieldspec = sortfield.value.match(/^(.+)-(.+)/);
-            if (sortfieldspec) {
-                sortcriteria = {
-                    'order': sortfieldspec[2],
-                    'field': sortfieldspec[1]
-                };
-            }
         }
-        if (sesskeyconfirmed || ignoresesskey) {
-            if (filterarray) {
-                returnedFilter.filters = filterarray;
-            }
-            if (sortcriteria) {
-                returnedFilter.sort = sortcriteria;
-            }
-            return returnedFilter;
+    )
+    ;
+    const sortfield = data.find((d) => d.name === 'sort');
+    if (sortfield && sortfield.value) {
+        const sortfieldspec = sortfield.value.match(/^(.+)-(.+)/);
+        if (sortfieldspec) {
+            sortcriteria = {
+                'order': sortfieldspec[2],
+                'field': sortfieldspec[1]
+            };
         }
-        return null;
     }
-;
+    if (sesskeyconfirmed || ignoresesskey) {
+        if (filterarray) {
+            returnedFilter.filters = filterarray;
+        }
+        if (sortcriteria) {
+            returnedFilter.sort = sortcriteria;
+        }
+        return returnedFilter;
+    }
+    return null;
+};
