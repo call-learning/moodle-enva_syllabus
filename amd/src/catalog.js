@@ -34,7 +34,6 @@ import Config from 'core/config';
 export const init = (catalogTagId) => {
     // TODO: take the initial filter from the form.
     refreshCoursesList(catalogTagId, {
-        filters: [],
         sort: {
             field: 'customfield_uc_annee',
             order: 'asc'

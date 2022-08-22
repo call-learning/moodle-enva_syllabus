@@ -83,7 +83,7 @@ class language_switcher implements renderable, templatable {
      */
     public function set_lang() {
         global $SESSION;
-        $this->previouslang = $SESSION->lang;
+        $this->previouslang = $SESSION->lang ?? null;
         if ($this->currentlang) {
             $SESSION->lang = $this->currentlang;
         } else {

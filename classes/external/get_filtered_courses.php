@@ -80,7 +80,7 @@ class get_filtered_courses extends external_api {
             $paramstocheck['sort'] = $sort;
         }
         $params = self::validate_parameters(self::execute_parameters(), $paramstocheck);
-        raise_memory_limit(MEMORY_EXTRA);
+        raise_memory_limit(MEMORY_HUGE);
         self::validate_context(context_system::instance());
         // First we get all courses matching filters.
         // Then we filter by visibility...
@@ -149,7 +149,8 @@ class get_filtered_courses extends external_api {
                         substr($cobject->smallsummarytext, 0, static::SMALL_SUMMARY_LENGTH)
                         . "...";
                 }
-
+                // Sometimes truncation leads to utf8 related issues.
+                $cobject->smallsummarytext = clean_param($cobject->smallsummarytext, PARAM_RAW);
             }
             if ($addcourse) {
                 $listelement = new \core_course_list_element($cobject);
@@ -196,7 +197,7 @@ class get_filtered_courses extends external_api {
         return new external_function_parameters(
             [
                 'rootcategoryid' => new external_value(PARAM_INT, 'root category id'),
-                'currentlang' => new external_value(PARAM_ALPHA, 'Current language code', VALUE_OPTIONAL, ''),
+                'currentlang' => new external_value(PARAM_ALPHA, 'Current language code', VALUE_DEFAULT, ''),
                 'filters' =>
                     new external_multiple_structure(
                         new external_single_structure(
@@ -211,16 +212,18 @@ class get_filtered_courses extends external_api {
                             ]
                         ),
                         'Filters',
-                        VALUE_OPTIONAL
+                        VALUE_DEFAULT,
+                        []
                     ),
                 'sort' =>
-                    new \external_single_structure(
+                    new external_single_structure(
                         [
                             'field' => new external_value(PARAM_ALPHANUMEXT, 'field type'),
                             'order' => new external_value(PARAM_ALPHA, 'asc or desc'),
                         ],
                         'Sort',
-                        VALUE_OPTIONAL
+                        VALUE_DEFAULT,
+                        null
                     ),
             ]
         );
