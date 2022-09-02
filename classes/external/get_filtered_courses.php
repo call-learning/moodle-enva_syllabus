@@ -68,7 +68,7 @@ class get_filtered_courses extends external_api {
      * @throws \invalid_parameter_exception
      * @throws \restricted_context_exception
      */
-    public static function execute($rootcategoryid, $currentlang = '', $filters = null, $sort = null) {
+    public static function execute($rootcategoryid, $currentlang = 'fr', $filters = null, $sort = null) {
         $paramstocheck = [
             'rootcategoryid' => $rootcategoryid,
             'currentlang' => $currentlang
@@ -119,9 +119,10 @@ class get_filtered_courses extends external_api {
                     ];
                 }
             }
+            $cobject->displayname = $cobject->fullname;
             if (!empty($cobject->customfields['uc_titre_' . $currentlang])) {
                 if (!empty($cobject->customfields['uc_titre_' . $currentlang]['value'])) {
-                    $cobject->displayname = $cobject->customfields['uc_titre_' . $currentlang]['value'];
+                    $cobject->displayname = html_to_text($cobject->customfields['uc_titre_' . $currentlang]['value']);
                 }
             }
             if (!empty($params['filters'])) {
@@ -139,11 +140,17 @@ class get_filtered_courses extends external_api {
                     }
                 }
             }
+            if (!empty($cobject->customfields['uc_titre_' . $currentlang])) {
+                if (!empty($cobject->customfields['uc_titre_' . $currentlang]['value'])) {
+                    $cobject->displayname = html_to_text($cobject->customfields['uc_titre_' . $currentlang]['value']);
+                }
+            }
+
             $cobject->smallsummarytext = '';
-            if (!empty($cobject->summary) && !empty($cobject->summaryformat)) {
-                $cobject->smallsummarytext = html_to_text(format_text($cobject->summary, $cobject->summaryformat, [
-                    'context' => $coursecontext
-                ]));
+
+            if (!empty($cobject->customfields['uc_summary_' . $currentlang])) {
+                $cobject->smallsummarytext = html_to_text($cobject->customfields['uc_summary_' . $currentlang]['value']);
+
                 if (strlen($cobject->smallsummarytext) > static::SMALL_SUMMARY_LENGTH) {
                     $cobject->smallsummarytext =
                         substr($cobject->smallsummarytext, 0, static::SMALL_SUMMARY_LENGTH)
@@ -197,7 +204,7 @@ class get_filtered_courses extends external_api {
         return new external_function_parameters(
             [
                 'rootcategoryid' => new external_value(PARAM_INT, 'root category id'),
-                'currentlang' => new external_value(PARAM_ALPHA, 'Current language code', VALUE_DEFAULT, ''),
+                'currentlang' => new external_value(PARAM_ALPHA, 'Current language code', VALUE_DEFAULT, 'fr'),
                 'filters' =>
                     new external_multiple_structure(
                         new external_single_structure(

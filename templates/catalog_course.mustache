@@ -49,9 +49,11 @@
                                             </span>
                     <span class="font-weight-bold">
                         {{{displayname}}}
-                        <a type="button" data-toggle="popover" data-placement="right" class="course-info-popover"
+                        <a type="button" data-toggle="popover" data-placement="top" class="course-info-popover"
                            title="{{#str}}course:summary, local_envasyllabus{{/str}}"
-                           data-content="{{smallsummarytext}}">{{#pix}}i/info, core, {{#str}}info{{/str}}{{/pix}}</a>
+                           data-content="{{smallsummarytext}}"
+                           data-trigger="click hover focus"
+                        >{{#pix}}i/info, core, {{#str}}info{{/str}}{{/pix}}</a>
                     </span>
                     {{^visible}}
                         <div class="d-flex flex-wrap">
@@ -78,8 +80,8 @@
                     </span>
                 {{/cf.uc_ects.value}}
             </div>
-            <div class="align-self-end">
-                <a href="{{syllabusurl}}" class="icon-large">{{#pix}}i/arrowview, local_envasyllabus, {{#str}}view{{/str}}{{/pix}}</a>
+            <div class="align-self-end view-course-icon">
+                <a href="{{syllabusurl}}" class="icon-super-size">{{#pix}}i/arrowview, local_envasyllabus, {{#str}}view{{/str}}{{/pix}}</a>
             </div>
         </div>
     </div>

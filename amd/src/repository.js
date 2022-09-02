@@ -30,7 +30,7 @@ import Ajax from 'core/ajax';
  * @param {string} currentLang
  * @returns {*}
  */
-export const getCoursesForCategoryId = function (rootCategoryId, filterParams = {}, currentLang = '') {
+export const getCoursesForCategoryId = function (rootCategoryId, filterParams = {}, currentLang = 'fr') {
 
     let request = {
         methodname: 'local_envasyllabus_get_filtered_courses',

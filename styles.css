@@ -7,7 +7,7 @@
 /* Course page */
 .local-envasyllabus-course-syllabus .syllabus-title {
     font-weight: bold;
-    font-size: xx-large;
+    font-size: x-large;
 }
 /* Course page */
 .local-envasyllabus-course-syllabus .syllabus-header-img {
@@ -44,7 +44,12 @@
 
 .local-envasyllabus-course-syllabus .syllabus-fullname {
     font-weight: bold;
-    font-size: x-large;
+    font-size: xx-large;
+    padding-top: 0.75em;
+}
+
+.local-envasyllabus-course-syllabus .syllabus-summary {
+    margin: 1em auto;
 }
 
 .local-envasyllabus-course-syllabus .syllabus-title .title-caret {
@@ -62,7 +67,27 @@
     vertical-align: text-top;
 }
 
+.local-envasyllabus-course-syllabus .syllabus-desc-container table {
+    width: 100%;
+    margin-bottom: 20px;
+    max-width: 100%;
+    background-color: transparent;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
 
+.local-envasyllabus-course-syllabus .syllabus-desc-container table td {
+    padding: 8px;
+    line-height: 20px;
+    text-align: left;
+    vertical-align: top;
+    border-top: 1px solid #ddd;
+}
+
+.local-envasyllabus-course-syllabus .syllabus-desc-container h4 {
+    display: block;
+    width: 100%;
+}
 .syllabus-additional-buttons {
     float: right;
     display: flex;
@@ -112,4 +137,17 @@
 .teachers-container .row [class*="span"] {
     margin-left: 1em !important;
     padding-top: 1em;
+}
+
+.local-envasyllabus-catalog-course .popover-body {
+    text-align: left;
+}
+
+.local-envasyllabus-catalog-course .icon-super-size img,  .local-envasyllabus-catalog-course .view-course-icon{
+    width: 32px;
+    height: 32px;
+}
+
+.local-envasyllabus-catalog-course .view-course-icon a {
+    vertical-align: top;
 }

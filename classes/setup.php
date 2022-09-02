@@ -66,12 +66,12 @@ class setup {
         $configs = explode(PHP_EOL, $configtext);
         $csvheader = str_getcsv(array_shift($configs), ';');
         foreach ($configs as $csvrow) {
-            $csvrowarray = str_getcsv($csvrow, ';');
+            $csvrowarray = str_getcsv($csvrow, ';', '"', "");
             if (count($csvrowarray) != count($csvheader)) {
                 debugging("Error: the array should have the same number of columns than the row" . $csvrow);
                 continue;
             }
-            $field = array_combine($csvheader, str_getcsv($csvrow, ';'));
+            $field = array_combine($csvheader, $csvrowarray);
             $field = (object) $field;
             $category = category::get_record(array('name' => $field->catname, 'component' => 'core_course'));
             if (!$category) {

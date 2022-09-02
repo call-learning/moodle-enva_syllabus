@@ -121,6 +121,16 @@ class course_syllabus implements renderable, templatable {
         foreach ($cfdata as $cfdatacontroller) {
             $customfields[$cfdatacontroller->get_field()->get('shortname')] = $cfdatacontroller->export_value();
         }
+
+        // Fetch right title.
+
+        $contextdata->coursedata->displayname = $contextdata->coursedata->fullname;
+        if (!empty($customfields['uc_titre_' . $currentlang])) {
+            if (!empty($customfields['uc_titre_' . $currentlang])) {
+                $contextdata->coursedata->displayname = html_to_text($customfields['uc_titre_' . $currentlang]);
+            }
+        }
+
         $contextdata->teachers = [];
         $managers = $this->get_teacher_for_course($this->courseid, self::RESPONSABLE_ROLES_NAME);
         $canviewuseridentity = has_capability('moodle/site:viewuseridentity', $context);
@@ -169,6 +179,7 @@ class course_syllabus implements renderable, templatable {
         $contextdata->prerequisites = $this->get_cf_displayable_info('uc_prerequis', $cfdata, $output);
         $contextdata->programme = $this->get_cf_displayable_info('uc_programme', $cfdata, $output);
         $contextdata->vaq = $this->get_cf_displayable_info('uc_validation', $cfdata, $output);
+
         return $contextdata;
     }
 
