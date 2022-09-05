@@ -84,43 +84,43 @@
         {{/content}}
     {{/local_envasyllabus/course_syllabus_collapsible}}
     {{#prerequisites}}
-    {{<local_envasyllabus/course_syllabus_collapsible}}
-        {{$id}}prerequisites-{{uniqid}}{{/id}}
-        {{$type}}prerequisites{{/type}}
-        {{$title}}{{#str}}syllabuspage:prerequisites, local_envasyllabus{{/str}}{{/title}}
-        {{$content}}
-            {{{prerequisites}}}
-        {{/content}}
-    {{/local_envasyllabus/course_syllabus_collapsible}}
+        {{<local_envasyllabus/course_syllabus_collapsible}}
+            {{$id}}prerequisites-{{uniqid}}{{/id}}
+            {{$type}}prerequisites{{/type}}
+            {{$title}}{{#str}}syllabuspage:prerequisites, local_envasyllabus{{/str}}{{/title}}
+            {{$content}}
+                {{{prerequisites}}}
+            {{/content}}
+        {{/local_envasyllabus/course_syllabus_collapsible}}
     {{/prerequisites}}
-    {{#program}}
-    {{<local_envasyllabus/course_syllabus_collapsible}}
-        {{$id}}program-{{uniqid}}{{/id}}
-        {{$type}}program{{/type}}
-        {{$title}}{{#str}}syllabuspage:program, local_envasyllabus{{/str}}{{/title}}
-        {{$content}}
-            {{{programme}}}
-        {{/content}}
-    {{/local_envasyllabus/course_syllabus_collapsible}}
-        {{/program}}
-            {{#vaq}}
-    {{<local_envasyllabus/course_syllabus_collapsible}}
-        {{$id}}vaq-{{uniqid}}{{/id}}
-        {{$type}}vaq{{/type}}
-        {{$title}}{{#str}}syllabuspage:vaq, local_envasyllabus{{/str}}{{/title}}
-        {{$content}}
-            {{{vaq}}}
-        {{/content}}
-    {{/local_envasyllabus/course_syllabus_collapsible}}
-{{/vaq}}
+    {{#programme}}
+        {{<local_envasyllabus/course_syllabus_collapsible}}
+            {{$id}}program-{{uniqid}}{{/id}}
+            {{$type}}program{{/type}}
+            {{$title}}{{#str}}syllabuspage:program, local_envasyllabus{{/str}}{{/title}}
+            {{$content}}
+                {{{programme}}}
+            {{/content}}
+        {{/local_envasyllabus/course_syllabus_collapsible}}
+    {{/programme}}
+    {{#vaq}}
+        {{<local_envasyllabus/course_syllabus_collapsible}}
+            {{$id}}vaq-{{uniqid}}{{/id}}
+            {{$type}}vaq{{/type}}
+            {{$title}}{{#str}}syllabuspage:vaq, local_envasyllabus{{/str}}{{/title}}
+            {{$content}}
+                {{{vaq}}}
+            {{/content}}
+        {{/local_envasyllabus/course_syllabus_collapsible}}
+    {{/vaq}}
     {{#additionalinfos}}
-    {{<local_envasyllabus/course_syllabus_collapsible}}
-        {{$id}}additionalinfos-{{uniqid}}{{/id}}
-        {{$type}}additionalinfos{{/type}}
-        {{$title}}{{#str}}syllabuspage:additionalinfos, local_envasyllabus{{/str}}{{/title}}
-        {{$content}}
-            {{{additionalinfos}}}
-        {{/content}}
-    {{/local_envasyllabus/course_syllabus_collapsible}}
+        {{<local_envasyllabus/course_syllabus_collapsible}}
+            {{$id}}additionalinfos-{{uniqid}}{{/id}}
+            {{$type}}additionalinfos{{/type}}
+            {{$title}}{{#str}}syllabuspage:additionalinfos, local_envasyllabus{{/str}}{{/title}}
+            {{$content}}
+                {{{additionalinfos}}}
+            {{/content}}
+        {{/local_envasyllabus/course_syllabus_collapsible}}
     {{/additionalinfos}}
 </div>
