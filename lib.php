@@ -65,6 +65,21 @@ function local_envasyllabus_extend_navigation(global_navigation $navigation) {
 }
 
 /**
+ * Insert "View Syllabus" Button in course header
+ *
+ * @return void
+ */
+function local_envasyllabus_before_standard_top_of_body_html() {
+    global $PAGE;
+    $context = $PAGE->context;
+    if ($context->contextlevel == CONTEXT_COURSE && $context->instanceid != SITEID) {
+        if (strpos(trim(strtolower($PAGE->course->shortname)), 'uc') === 0) {
+            $PAGE->requires->js_call_amd('local_envasyllabus/syllabus_button', 'init', [$PAGE->course->id]);
+        }
+    }
+}
+
+/**
  * Specific icons for the module
  * @return string[]
  */
