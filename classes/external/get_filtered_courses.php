@@ -64,12 +64,12 @@ class get_filtered_courses extends external_api {
      * @param int $rootcategoryid
      * @param object|null $currentlang current selected language (en only supported for now)
      * @param array|null $filters It contains a list of search filters
-     * @param object|null $sort sort criteria
+     * @param array $sort sort criteria
      * @return array
      * @throws \invalid_parameter_exception
      * @throws \restricted_context_exception
      */
-    public static function execute($rootcategoryid, $currentlang = 'fr', $filters = null, $sort = null) {
+    public static function execute($rootcategoryid, $currentlang = 'fr', $filters = null, $sort = []) {
         $paramstocheck = [
             'rootcategoryid' => $rootcategoryid,
             'currentlang' => $currentlang
@@ -77,7 +77,7 @@ class get_filtered_courses extends external_api {
         if ($filters) {
             $paramstocheck['filters'] = $filters;
         }
-        if ($sort) {
+        if (!empty($sort)) {
             $paramstocheck['sort'] = $sort;
         }
         $params = self::validate_parameters(self::execute_parameters(), $paramstocheck);
@@ -179,7 +179,7 @@ class get_filtered_courses extends external_api {
                 $filteredcourse[] = $cobject;
             }
         }
-        if ($sort) {
+        if (!empty($sort)) {
             uasort($filteredcourse, function($c1, $c2) use ($sort) {
                 if (strpos($sort['field'], 'customfield_') === 0) {
                     $sortfieldname = str_replace('customfield_', '', $sort['field']);
@@ -237,8 +237,7 @@ class get_filtered_courses extends external_api {
                             'order' => new external_value(PARAM_ALPHA, 'asc or desc'),
                         ],
                         'Sort',
-                        VALUE_DEFAULT,
-                        null
+                        VALUE_OPTIONAL
                     ),
             ]
         );

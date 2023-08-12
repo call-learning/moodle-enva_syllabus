@@ -34,7 +34,7 @@ export const init = (catalogTagId) => {
     // TODO: take the initial filter from the form.
     refreshCoursesList(catalogTagId, {
         sort: {
-            field: 'customfield_uc_annee',
+            field: 'fullname',
             order: 'asc'
         }
     });
@@ -105,22 +105,25 @@ const buildCourseList = (courses) => {
         }
     }
     // Flattern the object into an array.
-    return Object.values(sortedCourses).map(
-        yearDef => {
-            // Always sort by semesters.
-            const sortedSemesters = Object.keys(yearDef.semesters)
-                .sort()
-                .reduce((acc, key) => {
-                    acc[key] = yearDef.semesters[key];
-                    return acc;
-                }, {});
+    return Object.entries(sortedCourses)
+        // Preserve the order of the years as Object.entries does not.
+        .sort((y1, y2) => y1[0].localeCompare(y2[0]))
+        .map(
+            ([, yearDef]) => {
+                // Always sort by semesters.
+                const sortedSemesters = Object.keys(yearDef.semesters)
+                    .sort()
+                    .reduce((acc, key) => {
+                        acc[key] = yearDef.semesters[key];
+                        return acc;
+                    }, {});
 
-            return {
-                year: yearDef.year,
-                semesters: Object.values(sortedSemesters)
-            };
-        }
-    );
+                return {
+                    year: yearDef.year,
+                    semesters: Object.values(sortedSemesters)
+                };
+            }
+        );
 };
 
 /**

@@ -84,7 +84,7 @@ class catalog_filter_form extends \moodleform {
             $sorttypes
         );
         $mform->setType('sort', PARAM_ALPHAEXT);
-        $mform->setDefault('sort', 'customfield_uc_annee-asc');
+        $mform->setDefault('sort', 'fullname-asc');
         $submitlabel = get_string('search');
         $mform->addElement('submit', 'submitbutton', $submitlabel);
     }
