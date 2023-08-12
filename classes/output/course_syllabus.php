@@ -320,7 +320,7 @@ class course_syllabus implements renderable, templatable {
             $ue->id,
             $currentcomp
         );
-        $text = \html_writer::div($output->render($progressoverview), "container-fluid w-75");
+        $text = \html_writer::div($output->render($progressoverview), "uevscompetency-summary");
         return $text;
     }
 

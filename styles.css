@@ -19,7 +19,9 @@
     line-height: normal;
     width: auto;
 }
-
+.local-envasyllabus-course-syllabus .graph-header-title {
+    display: none;
+}
 .local-envasyllabus-course-syllabus .syllabus-data td {
     border-top: none;
     padding: 0px 8px;
@@ -70,6 +72,11 @@
     vertical-align: text-top;
 }
 
+@media (max-width: 768px) {
+    .local-envasyllabus-course-syllabus .syllabus-desc-container .competency-inner-container {
+        flex-wrap: wrap-reverse;
+    }
+}
 .local-envasyllabus-course-syllabus .syllabus-desc-container table {
     width: 100%;
     margin-bottom: 20px;
