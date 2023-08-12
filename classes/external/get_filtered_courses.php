@@ -22,6 +22,7 @@ global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/course/externallib.php');
 
+use cache;
 use context_system;
 use core_course_external;
 use external_api;
@@ -80,6 +81,12 @@ class get_filtered_courses extends external_api {
             $paramstocheck['sort'] = $sort;
         }
         $params = self::validate_parameters(self::execute_parameters(), $paramstocheck);
+        $cachekey = sha1(join($filters). join($sort) . $rootcategoryid . $currentlang . " ");
+        $cache = cache::make('local_envasyllabus', 'filteredcourses');
+        $cachedresult = $cache->get($cachekey);
+        if (!empty($cachedresult)) {
+            return $cachedresult;
+        }
         raise_memory_limit(MEMORY_HUGE);
         self::validate_context(context_system::instance());
         // First we get all courses matching filters.
@@ -192,6 +199,7 @@ class get_filtered_courses extends external_api {
                 return 0;
             });
         }
+        $cache->set($cachekey, $filteredcourse);
         return $filteredcourse;
     }
 
