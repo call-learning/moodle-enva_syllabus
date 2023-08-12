@@ -36,15 +36,15 @@
 
 <div class="local-envasyllabus-course-syllabus-header container">
     <div class="d-flex">
-        <div class="m-2">
+        <div class="m-x-4">
             <img class="img-fluid syllabus-header-img" src="{{coursedata.courseimage}}" alt="{{coursedata.fullname}}">
         </div>
         <div class="flex-grow-1 m-l-2">
             <table class="table table-borderless syllabus-data">
                 {{#headerdata}}
                     <tr class="{{class}}">
-                        <td>{{#icon}}{{#pix}}{{.}}, local_envasyllabus, {{title}}{{/pix}}{{/icon}}{{title}}</td>
-                        <td>{{value}}</td>
+                        <td class="data-label">{{#icon}}{{#pix}}{{.}}, local_envasyllabus, {{title}}{{/pix}}{{/icon}}{{title}}</td>
+                        <td class="data-value">{{value}}</td>
                     </tr>
                 {{/headerdata}}
             </table>

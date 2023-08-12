@@ -16,7 +16,6 @@
 /**
  * Add view syllabus button in the course summary
  *
- * @package    local_envasyllabus
  * @copyright  2023 CALL Learning <laurent@call-learning.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,7 +28,7 @@ import Config from 'core/config';
  * @param {number} courseId
  */
 export const init = (courseId) => {
-    const summaryTag = document.querySelector('.content .summary');
+    const summaryTag = document.querySelector('.content .summary, .content .summarytext .no-overflow');
     const url = Config.wwwroot + '/local/envasyllabus/syllabuspage.php?id=' + courseId;
     Templates.render('local_envasyllabus/syllabus_button', {
         url: url

@@ -12,6 +12,7 @@
 /* Course page */
 .local-envasyllabus-course-syllabus .syllabus-header-img {
     max-height: 400px;
+    max-width: 450px;
 }
 
 .local-envasyllabus-course-syllabus .syllabus-data {
@@ -23,7 +24,9 @@
     border-top: none;
     padding: 0px 8px;
 }
-
+.local-envasyllabus-course-syllabus .syllabus-data td.data-value {
+    text-align: right;
+}
 .local-envasyllabus-course-syllabus .syllabus-resp {
     padding: 0.5em 0em 2em;
 }
