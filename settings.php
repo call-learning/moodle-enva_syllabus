@@ -84,7 +84,7 @@ if ($hassiteconfig) {
                 $settingdescription,
                 join(',', visibility::PUBLIC_SYLLABUS_FIELDS)
             );
-            $generalsettingspage->add($rootcategoryid);
+            $generalsettingspage->add($publicfields);
         }
     }
     $optionalsubsystems = $ADMIN->locate('optionalsubsystems');

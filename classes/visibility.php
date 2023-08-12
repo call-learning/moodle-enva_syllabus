@@ -47,7 +47,9 @@ class visibility {
         'uc_heures_he_aas_etudiant',
         'uc_heures_he_tpers_etudiant',
         'uc_competences',
-        'uc_competences_en'
+        'uc_competences_en',
+        'uc_infos_compl',
+        'uc_infos_compl_en'
     ];
 
     /**
