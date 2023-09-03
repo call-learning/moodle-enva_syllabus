@@ -33,7 +33,6 @@ use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
 use external_value;
-use local_envasyllabus\setup;
 use local_envasyllabus\visibility;
 use moodle_url;
 
@@ -81,125 +80,13 @@ class get_filtered_courses extends external_api {
             $paramstocheck['sort'] = $sort;
         }
         $params = self::validate_parameters(self::execute_parameters(), $paramstocheck);
-        $cachekey = sha1(join($filters). join($sort) . $rootcategoryid . $currentlang . " ");
-        $cache = cache::make('local_envasyllabus', 'filteredcourses');
-        $cachedresult = $cache->get($cachekey);
-        if (!empty($cachedresult)) {
-            return $cachedresult;
-        }
         raise_memory_limit(MEMORY_HUGE);
         self::validate_context(context_system::instance());
-        // First we get all courses matching filters.
-        // Then we filter by visibility...
-        $category = \core_course_category::get($params['rootcategoryid']);
-        // Get all courses from this category.
-        $coursesid = $category->get_courses(['recursive' => true, 'idonly' => true]);
-        // Now feed it back to the get_courses.
-        $courses = core_course_external::get_courses_by_field(
-            'ids',
-            join(',', $coursesid)
-        );
-        $allcustomfields = \core_course\customfield\course_handler::create()->get_instances_data($coursesid, true);
-        // Filter out course ID = 1.
-        $courses = array_filter($courses['courses'], function($c) {
-            return $c['id'] != SITEID;
-        });
+        $courses = self::get_courses($params['rootcategoryid']);
+
         // Now the filter.
-        $filteredcourse = [];
-        foreach ($courses as $c) {
-            $cobject = (object) $c;
-            $addcourse = true;
-            $coursecustomfieldsmatcher = [];
-            $cobject->customfields = [];
-            $coursecfs = $allcustomfields[$cobject->id] ?? [];
-            $coursecontext = \context_course::instance($cobject->id);
-            foreach ($coursecfs as $cfdatacontroller) {
-                $coursecustomfieldsmatcher[$cfdatacontroller->get_field()->get('shortname')] = $cfdatacontroller->export_value();
-                $fieldshortname = $cfdatacontroller->get_field()->get('shortname');
-                $canviewfield = visibility::is_customfield_visible($fieldshortname);
-                if ($canviewfield) {
-                    $cobject->customfields[$fieldshortname] = [
-                        'type' => $cfdatacontroller->get_field()->get('type'),
-                        'value' => $cfdatacontroller->export_value(),
-                        'name' => $cfdatacontroller->get_field()->get('name'),
-                        'shortname' => $fieldshortname
-                    ];
-                }
-            }
-            $cobject->displayname = $cobject->fullname;
-            if (!empty($cobject->customfields['uc_titre_' . $currentlang])) {
-                if (!empty($cobject->customfields['uc_titre_' . $currentlang]['value'])) {
-                    $cobject->displayname = html_to_text($cobject->customfields['uc_titre_' . $currentlang]['value']);
-                }
-            }
-            if (!empty($params['filters'])) {
-                foreach ($params['filters'] as $criterion) {
-                    switch ($criterion['type']) {
-                        case static::TYPE_CUSTOM_FIELD:
-                            $search = $criterion['search'];
-                            $searchfield = $search['field'];
-                            if (!empty($coursecustomfieldsmatcher[$searchfield])) {
-                                $addcourse = $addcourse && ($coursecustomfieldsmatcher[$searchfield] == $search['value']);
-                            }
-                            break;
-                        case static::FULL_TEXT_SEARCH:
-                            break;
-                    }
-                }
-            }
-            if (!empty($cobject->customfields['uc_titre_' . $currentlang])) {
-                if (!empty($cobject->customfields['uc_titre_' . $currentlang]['value'])) {
-                    $cobject->displayname = html_to_text($cobject->customfields['uc_titre_' . $currentlang]['value']);
-                }
-            }
-
-            $cobject->smallsummarytext = '';
-
-            if (!empty($cobject->customfields['uc_summary_' . $currentlang])) {
-                $cobject->smallsummarytext = html_to_text($cobject->customfields['uc_summary_' . $currentlang]['value']);
-
-                if (strlen($cobject->smallsummarytext) > static::SMALL_SUMMARY_LENGTH) {
-                    $cobject->smallsummarytext =
-                        substr($cobject->smallsummarytext, 0, static::SMALL_SUMMARY_LENGTH)
-                        . "...";
-                }
-                // Sometimes truncation leads to utf8 related issues.
-                $cobject->smallsummarytext = clean_param($cobject->smallsummarytext, PARAM_RAW);
-            }
-            if ($addcourse) {
-                $listelement = new \core_course_list_element($cobject);
-                $cobject->courseimageurl = (new moodle_url('/local/envasyllabus/pix/nocourseimage.jpg'))->out();
-                $overviewfiles = $listelement->get_course_overviewfiles();
-                if ($overviewfiles) {
-                    $file = array_shift($overviewfiles);
-                    $cobject->courseimageurl = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(),
-                        $file->get_filearea(), null, $file->get_filepath(),
-                        $file->get_filename())->out(false);
-                }
-                $filteredcourse[] = $cobject;
-            }
-        }
-        if (!empty($sort)) {
-            uasort($filteredcourse, function($c1, $c2) use ($sort) {
-                if (strpos($sort['field'], 'customfield_') === 0) {
-                    $sortfieldname = str_replace('customfield_', '', $sort['field']);
-                    $c1value = $c1->customfields[$sortfieldname]["value"] ?? '';
-                    $c2value = $c2->customfields[$sortfieldname]["value"] ?? '';
-                } else {
-                    $c1value = $c1->{$sort['field']} ?? '';
-                    $c2value = $c2->{$sort['field']} ?? '';
-                }
-                $sortfactor = $sort['order'] == 'asc' ? 1 : -1;
-                if (is_string($c1value) && is_string($c2value)) {
-                    return strcmp($c1value, $c2value) * $sortfactor;
-                }
-                if (is_int($c1value) && is_int($c2value)) {
-                    return ($c1value < $c2value) ? -$sortfactor : $sortfactor;
-                }
-                return 0;
-            });
-        }
-        $cache->set($cachekey, $filteredcourse);
+        $filteredcourse = self::filter_courses($courses, $params['filters'], $params['currentlang']);
+        self::sort_courses($filteredcourse, $sort);
         return $filteredcourse;
     }
 
@@ -241,6 +128,173 @@ class get_filtered_courses extends external_api {
                     ),
             ]
         );
+    }
+
+    /**
+     * Get all courses
+     *
+     * @param int $rootcategoryid
+     * @return array array of courses
+     * @throws \invalid_parameter_exception
+     * @throws \moodle_exception
+     */
+    protected static function get_courses(int $rootcategoryid): array {
+        // First we get all courses matching filters.
+        // Then we filter by visibility...
+        $cache = cache::make('local_envasyllabus', 'filteredcourses');
+        if ($courses = $cache->get('allcourses')) {
+            return $courses;
+        }
+        $category = \core_course_category::get($rootcategoryid);
+        // Get all courses from this category.
+        $coursesid = $category->get_courses(['recursive' => true, 'idonly' => true]);
+        // Now feed it back to the get_courses.
+        $courses = core_course_external::get_courses_by_field(
+            'ids',
+            join(',', $coursesid)
+        );
+        // Filter out course ID = 1.
+        if (!empty($courses['courses'][SITEID])) {
+            unset($courses['courses'][SITEID]);
+        }
+        $courses = $courses['courses'] ?? [];
+        self::map_customfiedls($courses);
+        $cache->set('allcourses', $courses);
+
+        return $courses;
+    }
+
+    /**
+     * Map custom fields
+     *
+     * @param array $courses
+     * @return void
+     */
+    protected static function map_customfiedls(array &$courses): void {
+        $allcustomfields = \core_course\customfield\course_handler::create()->get_instances_data(array_keys($courses), true);
+        foreach ($courses as $cid => &$course) {
+            $coursecfs = $allcustomfields[$cid] ?? [];
+            $course['customfields'] = [];
+            foreach ($coursecfs as $cfdatacontroller) {
+                $fieldshortname = $cfdatacontroller->get_field()->get('shortname');
+                $canviewfield = visibility::is_customfield_visible($fieldshortname);
+                if ($canviewfield) {
+                    $course['customfields'][$fieldshortname] = [
+                        'type' => $cfdatacontroller->get_field()->get('type'),
+                        'value' => $cfdatacontroller->export_value(),
+                        'name' => $cfdatacontroller->get_field()->get('name'),
+                        'shortname' => $fieldshortname
+                    ];
+                }
+            }
+        }
+    }
+
+    /**
+     * Filter courses through custom fields
+     *
+     * @param array $courses
+     * @param array $filters
+     * @param string $currentlang
+     * @return array
+     * @throws \coding_exception
+     */
+    protected static function filter_courses(array $courses, array $filters, string $currentlang): array {
+        $filteredcourses = [];
+        foreach ($courses as $c) {
+            $cobject = (object) $c;
+            $addcourse = true;
+            $coursecustomfieldsmatcher = [];
+            foreach ($cobject->customfields as $cf) {
+                $coursecustomfieldsmatcher[$cf['shortname']] = $cf['value'];
+            }
+            $cobject->displayname = $cobject->fullname;
+            if (!empty($cobject->customfields['uc_titre_' . $currentlang])) {
+                if (!empty($cobject->customfields['uc_titre_' . $currentlang]['value'])) {
+                    $cobject->displayname = html_to_text($cobject->customfields['uc_titre_' . $currentlang]['value']);
+                }
+            }
+            if (!empty($filters)) {
+                foreach ($filters as $criterion) {
+                    switch ($criterion['type']) {
+                        case static::TYPE_CUSTOM_FIELD:
+                            $search = $criterion['search'];
+                            $searchfield = $search['field'];
+                            if (!empty($search['value'])) {
+                                if (empty($coursecustomfieldsmatcher[$searchfield])) {
+                                    $addcourse = false;
+                                }
+                                $addcourse = $addcourse && ($coursecustomfieldsmatcher[$searchfield] == $search['value']);
+                            }
+                            break;
+                        case static::FULL_TEXT_SEARCH:
+                            break;
+                    }
+                }
+            }
+            if (!empty($cobject->customfields['uc_titre_' . $currentlang])) {
+                if (!empty($cobject->customfields['uc_titre_' . $currentlang]['value'])) {
+                    $cobject->displayname = html_to_text($cobject->customfields['uc_titre_' . $currentlang]['value']);
+                }
+            }
+
+            $cobject->smallsummarytext = '';
+
+            if (!empty($cobject->customfields['uc_summary_' . $currentlang])) {
+                $cobject->smallsummarytext = html_to_text($cobject->customfields['uc_summary_' . $currentlang]['value']);
+
+                if (strlen($cobject->smallsummarytext) > static::SMALL_SUMMARY_LENGTH) {
+                    $cobject->smallsummarytext =
+                        substr($cobject->smallsummarytext, 0, static::SMALL_SUMMARY_LENGTH)
+                        . "...";
+                }
+                // Sometimes truncation leads to utf8 related issues.
+                $cobject->smallsummarytext = clean_param($cobject->smallsummarytext, PARAM_RAW);
+            }
+            if ($addcourse) {
+                $listelement = new \core_course_list_element($cobject);
+                $cobject->courseimageurl = (new moodle_url('/local/envasyllabus/pix/nocourseimage.jpg'))->out();
+                $overviewfiles = $listelement->get_course_overviewfiles();
+                if ($overviewfiles) {
+                    $file = array_shift($overviewfiles);
+                    $cobject->courseimageurl = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(),
+                        $file->get_filearea(), null, $file->get_filepath(),
+                        $file->get_filename())->out(false);
+                }
+                $filteredcourses[] = $cobject;
+            }
+        }
+        return $filteredcourses;
+    }
+
+    /**
+     * Sort courses list by fields
+     *
+     * @param $courses array
+     * @param $sort array
+     * @return void
+     */
+    protected static function sort_courses(&$courses, $sort): void {
+        if (!empty($sort)) {
+            uasort($courses, function($c1, $c2) use ($sort) {
+                if (strpos($sort['field'], 'customfield_') === 0) {
+                    $sortfieldname = str_replace('customfield_', '', $sort['field']);
+                    $c1value = $c1->customfields[$sortfieldname]["value"] ?? '';
+                    $c2value = $c2->customfields[$sortfieldname]["value"] ?? '';
+                } else {
+                    $c1value = $c1->{$sort['field']} ?? '';
+                    $c2value = $c2->{$sort['field']} ?? '';
+                }
+                $sortfactor = $sort['order'] == 'asc' ? 1 : -1;
+                if (is_string($c1value) && is_string($c2value)) {
+                    return strcmp($c1value, $c2value) * $sortfactor;
+                }
+                if (is_int($c1value) && is_int($c2value)) {
+                    return ($c1value < $c2value) ? -$sortfactor : $sortfactor;
+                }
+                return 0;
+            });
+        }
     }
 
     /**

@@ -18,7 +18,6 @@
  * Common lib
  *
  * @package     local_envasyllabus
- * @category    string
  * @copyright   2022 CALL Learning - Laurent David <laurent@call-learning>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
