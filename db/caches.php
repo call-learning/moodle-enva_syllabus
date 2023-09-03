@@ -24,7 +24,7 @@
  * @copyright   2022 CALL Learning - Laurent David <laurent@call-learning>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+defined('MOODLE_INTERNAL') || die();
 $definitions = [
     // Used to store processed lang files.
     // The keys used are the revision, lang and component of the string file.

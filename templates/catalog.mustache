@@ -24,20 +24,26 @@
         "nocoursesimg": "https://moodlesite/theme/image.php/boost/block_myoverview/1535727318/courses",
         "grouping": "all",
         "sort": "fullname",
+        "sortdirection": "ASC",
+        "categoryrootid": 1,
+        "categoryid": 1,
+        "currentlang": "en",
+        "uniqid": "1234567890",
+        "filterform": "<form></form>"
     }
 }}
 <div id="catalog-{{uniqid}}">
     <div data-region="catalog-filter" id="catalog-filter-{{uniqid}}">
         {{{filterform}}}
         {{#js}}
-            require(['local_envasyllabus/filtersort'],function(FilterSort) {
+            require(['local_envasyllabus/filtersort'], function(FilterSort) {
             FilterSort.init('catalog-filter-{{uniqid}}');
             });
         {{/js}}
     </div>
     <div data-region="catalog-view-content" id="catalog-content-{{uniqid}}">
         <div class="catalog-courses" data-category-root-id="{{categoryrootid}}" {{#currentlang}}data-current-lang="{{.}}"{{/currentlang}}>
-            <div class="card-deck dashboard-card-deck one-row overflow-hidden" style="height: 26.05rem">
+            <div class="card-deck dashboard-card-deck one-row overflow-hidden" style="height: 350px">
                 {{> core_course/placeholder-course }}
                 {{> core_course/placeholder-course }}
                 {{> core_course/placeholder-course }}
@@ -47,7 +53,7 @@
     </div>
 </div>
 {{#js}}
-    require(['local_envasyllabus/catalog'],function(Catalog) {
+require(['local_envasyllabus/catalog'], function(Catalog) {
         Catalog.init('catalog-content-{{uniqid}}');
-    });
+});
 {{/js}}

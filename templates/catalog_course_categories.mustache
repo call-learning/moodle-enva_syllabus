@@ -23,7 +23,7 @@
     {
         "nocoursesimg": "https://moodlesite/theme/image.php/boost/block_myoverview/1535727318/courses",
         "grouping": "all",
-        "sort": "fullname",
+        "sort": "fullname"
     }
 }}
 <div id="catalog-course-category-{{uniqid}}" class="local-envasyllabus-ccat">
@@ -48,8 +48,7 @@
     {{/sortedCourses}}
 </div>
 {{#js}}
-    require(['theme_lambda/bootstrap', 'core/log'], function(bootstrap, log) {
+    require(['theme_lambda/bootstrap'], function(bootstrap) {
         jQuery('[data-toggle="popover"]').popover();
     });
 {{/js}}
-

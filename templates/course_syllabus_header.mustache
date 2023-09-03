@@ -15,21 +15,15 @@
    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
  }}
 {{!
-  @local_envasyllabus/course_syllabus
+  @template local_envasyllabus/course_syllabus
 
-  Syllabus templated
-
+  Syllabus template
   The purpose of this template is to output the syllabus of a course
-
-  Classes required for JS:
-
-  Data attributes required for JS:
-
-  Context variables required for this template:
 
   Example context (json):
   {
-
+    "coursedata": { "fullname": "Course name", "courseimage": "https://moodlesite/theme/image.php/boost/block_myoverview/1535727318/courses" },
+    "headerdata": [ { "class": "class", "icon": "icon", "title": "title", "value": "value" } ]
   }
 
 }}

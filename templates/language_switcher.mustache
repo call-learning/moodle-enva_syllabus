@@ -18,6 +18,21 @@
     @template local_envasyllabus/language_switcher
 
     Language switcher
+
+    Example context (json):
+    {
+        "languages": [
+            {
+                "id": "en",
+                "name": "English"
+            },
+            {
+                "id": "es",
+                "name": "Español"
+            }
+        ],
+        "currentlang": "en"
+    }
 }}
 <div class="local-envasyllabus-language-switcher container d-inline-block mx-3">
     {{>core/single_select}}

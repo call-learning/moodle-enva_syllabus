@@ -270,8 +270,8 @@ class get_filtered_courses extends external_api {
     /**
      * Sort courses list by fields
      *
-     * @param $courses array
-     * @param $sort array
+     * @param array $courses passed by reference
+     * @param array $sort
      * @return void
      */
     protected static function sort_courses(&$courses, $sort): void {

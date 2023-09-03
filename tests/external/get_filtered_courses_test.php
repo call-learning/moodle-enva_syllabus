@@ -258,7 +258,8 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
 
     /**
      * Test execute API CALL to get filtered courses by year
-     *
+     * @param array $filters
+     * @param array $expected
      * @dataProvider filter_dataprovider
      */
     public function test_get_filtered_courses($filters, $expected) {
@@ -274,6 +275,56 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
             $courses = $this->get_filtered_courses($this->categories['CAT1']->id, 'fr', $filters);
             $this->assertCount($expectedcount, $courses);
         }
+    }
+
+    /**
+     * Test execute API CALL to get filtered courses sorted by year
+     * @param string $cfname
+     * @param string $sortorder
+     * @param array $expected
+     * @dataProvider sort_dataprovider
+     */
+    public function test_get_filtered_courses_sort(string $cfname, string $sortorder, array $expected) {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $courses = $this->get_filtered_courses(
+            $this->categories['CAT1']->id,
+            'fr',
+            [],
+            ['field' => "customfield_" . $cfname, 'order' => $sortorder]
+        );
+        $this->assertCount(9, $courses);
+        $courseyears = array_map(function($course) use ($cfname) {
+            foreach ($course['customfields'] as $customfield) {
+                if ($customfield['shortname'] == $cfname) {
+                    return $customfield['value'];
+                }
+            }
+            return '';
+        }, $courses);
+        $this->assertEquals($expected, $courseyears);
+    }
+
+    /**
+     * Filter data provider
+     *
+     * @return array[]
+     */
+    public function sort_dataprovider() {
+        return [
+            'sort by year, descending' => [
+                'field' => 'uc_annee',
+                'order' => 'desc',
+                'expected' =>
+                    ['A2', 'A2', 'A1', 'A1', 'A1', 'A1', 'A1', 'A1', 'A1']
+            ],
+            'sort by year, ascending' => [
+                'field' => 'uc_annee',
+                'order' => 'asc',
+                'expected' =>
+                    ['A1', 'A1', 'A1', 'A1', 'A1', 'A1', 'A1', 'A2', 'A2']
+            ],
+        ];
     }
 
     /**
