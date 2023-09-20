@@ -229,6 +229,7 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
         $this->resetAfterTest();
         $this->expectException('require_login_exception');
         $courses = $this->get_filtered_courses(0);
+        $this->assertCount(0, $courses);
     }
 
     /**
@@ -265,12 +266,47 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
     public function test_get_filtered_courses($filters, $expected) {
         $this->resetAfterTest();
         foreach ($expected as $usertype => $expectedcount) {
-            if ($usertype == 'admin') {
-                $this->setAdminUser();
+            switch($usertype) {
+                case 'admin':
+                    $this->setAdminUser();
+                    break;
+                case 'guest':
+                    $this->setGuestUser();
+                    break;
+                default:
+                    $user = $this->getDataGenerator()->create_user();
+                    $this->setUser($user);
+                    break;
+            }
+            $courses = $this->get_filtered_courses($this->categories['CAT1']->id, 'fr', $filters);
+            $this->assertCount($expectedcount, $courses);
+        }
+    }
 
-            } else {
-                $user = $this->getDataGenerator()->create_user();
-                $this->setUser($user);
+    /**
+     * Test execute API CALL to get filtered course and make sure that cache is rendering ok for all user
+     *
+     * @param array $filters
+     * @param array $expected
+     * @dataProvider filter_dataprovider
+     */
+    public function test_get_filtered_courses_for_user($filters, $expected) {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        // Search courses as admin first. This is to check if there are no side effect to the cache.
+        $this->get_filtered_courses($this->categories['CAT1']->id, 'fr', $filters);
+        foreach ($expected as $usertype => $expectedcount) {
+            switch($usertype) {
+                case 'admin':
+                    $this->setAdminUser();
+                    break;
+                case 'guest':
+                    $this->setGuestUser();
+                    break;
+                default:
+                    $user = $this->getDataGenerator()->create_user();
+                    $this->setUser($user);
+                    break;
             }
             $courses = $this->get_filtered_courses($this->categories['CAT1']->id, 'fr', $filters);
             $this->assertCount($expectedcount, $courses);
@@ -347,7 +383,8 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
                 ],
                 'expected' => [
                     'admin' => 7,
-                    'user' => 6
+                    'user' => 6,
+                    'guest' => 6
                 ]
             ],
             'filter by year A2' => [
@@ -363,7 +400,8 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
                 ],
                 'expected' => [
                     'admin' => 2,
-                    'user' => 2
+                    'user' => 2,
+                    'guest' => 2
                 ]
             ],
         ];

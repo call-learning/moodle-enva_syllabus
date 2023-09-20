@@ -58,7 +58,7 @@ class visibility {
      * @param string $shortname
      * @return bool
      */
-    public static function is_customfield_visible(string $shortname): bool {
+    public static function is_syllabus_public_field(string $shortname): bool {
         $visible = true;
         if (isguestuser() || !isloggedin()) {
             $publicfieldlist = get_config('local_envasyllabus', 'publicfields');

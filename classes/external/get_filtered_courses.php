@@ -23,12 +23,12 @@ require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/course/externallib.php');
 
 use cache;
+use context_course;
 use context_system;
-use core_course_external;
+use core_course_category;
+use Exception;
 use external_api;
 use external_description;
-use external_files;
-use external_format_value;
 use external_function_parameters;
 use external_multiple_structure;
 use external_single_structure;
@@ -83,9 +83,54 @@ class get_filtered_courses extends external_api {
         raise_memory_limit(MEMORY_HUGE);
         self::validate_context(context_system::instance());
         $courses = self::get_courses($params['rootcategoryid']);
-
+        // Remove courses that are not visible to the current user.
+        foreach ($courses as $id => $course) {
+            $context = context_course::instance($course->id);
+            $canupdatecourse = has_capability('moodle/course:update', $context);
+            $canviewhiddencourses = has_capability('moodle/course:viewhiddencourses', $context);
+            // Check if the course is visible in the site for the user.
+            if ($course->visible || $canviewhiddencourses || $canupdatecourse) {
+                continue;
+            }
+            // Now, check if we have access to the course, unless it was already checked.
+            try {
+                self::validate_context($context);
+                continue;
+            } catch (Exception $e) {
+                // User can not access the course, check if they can see the public information about the course and return it.
+                if (core_course_category::can_view_course_info($course)) {
+                    continue;
+                }
+            }
+            unset($courses[$id]); // We cannot view the course so, let's remove it.
+        }
         // Now the filter.
-        $filteredcourse = self::filter_courses($courses, $params['filters'], $params['currentlang']);
+        $currentlang = $params['currentlang'];
+        $filteredcourse = self::filter_courses($courses, $params['filters'], $currentlang);
+
+        // Compute small summary and title depending on current lang.
+        foreach ($filteredcourse as $course) {
+            $course->displayname = $course->fullname;
+            if (!empty($course->customfields['uc_titre_' . $currentlang])) {
+                if (!empty($course->customfields['uc_titre_' . $currentlang]['value'])) {
+                    $course->displayname = html_to_text($course->customfields['uc_titre_' . $currentlang]['value']);
+                }
+            }
+            $course->smallsummarytext = '';
+
+            if (!empty($course->customfields['uc_summary_' . $currentlang])) {
+                $course->smallsummarytext = html_to_text($course->customfields['uc_summary_' . $currentlang]['value']);
+
+                if (strlen($course->smallsummarytext) > static::SMALL_SUMMARY_LENGTH) {
+                    $course->smallsummarytext =
+                        substr($course->smallsummarytext, 0, static::SMALL_SUMMARY_LENGTH)
+                        . "...";
+                }
+                // Sometimes truncation leads to utf8 related issues.
+                $course->smallsummarytext = clean_param($course->smallsummarytext, PARAM_RAW);
+            }
+        }
+
         self::sort_courses($filteredcourse, $sort);
         return $filteredcourse;
     }
@@ -139,29 +184,59 @@ class get_filtered_courses extends external_api {
      * @throws \moodle_exception
      */
     protected static function get_courses(int $rootcategoryid): array {
-        // First we get all courses matching filters.
-        // Then we filter by visibility...
         $cache = cache::make('local_envasyllabus', 'filteredcourses');
-        if ($courses = $cache->get('allcourses')) {
+        if ($courses = $cache->get($rootcategoryid)) {
             return $courses;
         }
         $category = \core_course_category::get($rootcategoryid);
         // Get all courses from this category.
-        $coursesid = $category->get_courses(['recursive' => true, 'idonly' => true]);
-        // Now feed it back to the get_courses.
-        $courses = core_course_external::get_courses_by_field(
-            'ids',
-            join(',', $coursesid)
-        );
+        $categorycourses = $category->get_courses(['recursive' => true, 'coursecontacts' => true]);
         // Filter out course ID = 1.
-        if (!empty($courses['courses'][SITEID])) {
-            unset($courses['courses'][SITEID]);
+        if (!empty($categorycourses[SITEID])) {
+            unset($categorycourses[SITEID]);
         }
-        $courses = $courses['courses'] ?? [];
+        $courses = [];
+        foreach ($categorycourses as $cid => $courselistelement) {
+            $course = (object) iterator_to_array($courselistelement->getIterator(), true);
+            $course->contextid = $courselistelement->get_context()->id;
+            $course->categoryid = $course->category;
+            unset($course->category);
+            $course->categoryname = static::get_category_name_for_id($course->categoryid);
+            $course->courseimageurl = (new moodle_url('/local/envasyllabus/pix/nocourseimage.jpg'))->out();
+            $overviewfiles = $courselistelement->get_course_overviewfiles();
+            if ($overviewfiles) {
+                $file = array_shift($overviewfiles);
+                $course->courseimageurl = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(),
+                    $file->get_filearea(), null, $file->get_filepath(),
+                    $file->get_filename())->out(false);
+            }
+            $course->managers = array_map(function($manager) {
+                return [
+                    'id' => $manager->id,
+                    'fullname' => $manager->fullname
+                ];
+            }, $course->managers);
+            $courses[$cid] = $course;
+        }
         self::map_customfiedls($courses);
-        $cache->set('allcourses', $courses);
-
+        $cache->set($rootcategoryid, $courses);
         return $courses;
+    }
+
+    /**
+     * Get category name for the given id
+     *
+     * @param int $categoryid
+     * @return mixed|string
+     * @throws \moodle_exception
+     */
+    protected static function get_category_name_for_id(int $categoryid) {
+        static $categories = [];
+        if (empty($categories[$categoryid])) {
+            $category = \core_course_category::get($categoryid);
+            $categories[$categoryid] = $category->get_formatted_name();
+        }
+        return $categories[$categoryid];
     }
 
     /**
@@ -174,12 +249,12 @@ class get_filtered_courses extends external_api {
         $allcustomfields = \core_course\customfield\course_handler::create()->get_instances_data(array_keys($courses), true);
         foreach ($courses as $cid => &$course) {
             $coursecfs = $allcustomfields[$cid] ?? [];
-            $course['customfields'] = [];
+            $course->customfields = [];
             foreach ($coursecfs as $cfdatacontroller) {
                 $fieldshortname = $cfdatacontroller->get_field()->get('shortname');
-                $canviewfield = visibility::is_customfield_visible($fieldshortname);
-                if ($canviewfield) {
-                    $course['customfields'][$fieldshortname] = [
+                $ispublicfield = visibility::is_syllabus_public_field($fieldshortname);
+                if ($ispublicfield) {
+                    $course->customfields[$fieldshortname] = [
                         'type' => $cfdatacontroller->get_field()->get('type'),
                         'value' => $cfdatacontroller->export_value(),
                         'name' => $cfdatacontroller->get_field()->get('name'),
@@ -201,18 +276,11 @@ class get_filtered_courses extends external_api {
      */
     protected static function filter_courses(array $courses, array $filters, string $currentlang): array {
         $filteredcourses = [];
-        foreach ($courses as $c) {
-            $cobject = (object) $c;
+        foreach ($courses as $cobject) {
             $addcourse = true;
             $coursecustomfieldsmatcher = [];
             foreach ($cobject->customfields as $cf) {
                 $coursecustomfieldsmatcher[$cf['shortname']] = $cf['value'];
-            }
-            $cobject->displayname = $cobject->fullname;
-            if (!empty($cobject->customfields['uc_titre_' . $currentlang])) {
-                if (!empty($cobject->customfields['uc_titre_' . $currentlang]['value'])) {
-                    $cobject->displayname = html_to_text($cobject->customfields['uc_titre_' . $currentlang]['value']);
-                }
             }
             if (!empty($filters)) {
                 foreach ($filters as $criterion) {
@@ -228,39 +296,12 @@ class get_filtered_courses extends external_api {
                             }
                             break;
                         case static::FULL_TEXT_SEARCH:
+                            // To Do: implement full text search.
                             break;
                     }
                 }
             }
-            if (!empty($cobject->customfields['uc_titre_' . $currentlang])) {
-                if (!empty($cobject->customfields['uc_titre_' . $currentlang]['value'])) {
-                    $cobject->displayname = html_to_text($cobject->customfields['uc_titre_' . $currentlang]['value']);
-                }
-            }
-
-            $cobject->smallsummarytext = '';
-
-            if (!empty($cobject->customfields['uc_summary_' . $currentlang])) {
-                $cobject->smallsummarytext = html_to_text($cobject->customfields['uc_summary_' . $currentlang]['value']);
-
-                if (strlen($cobject->smallsummarytext) > static::SMALL_SUMMARY_LENGTH) {
-                    $cobject->smallsummarytext =
-                        substr($cobject->smallsummarytext, 0, static::SMALL_SUMMARY_LENGTH)
-                        . "...";
-                }
-                // Sometimes truncation leads to utf8 related issues.
-                $cobject->smallsummarytext = clean_param($cobject->smallsummarytext, PARAM_RAW);
-            }
             if ($addcourse) {
-                $listelement = new \core_course_list_element($cobject);
-                $cobject->courseimageurl = (new moodle_url('/local/envasyllabus/pix/nocourseimage.jpg'))->out();
-                $overviewfiles = $listelement->get_course_overviewfiles();
-                if ($overviewfiles) {
-                    $file = array_shift($overviewfiles);
-                    $cobject->courseimageurl = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(),
-                        $file->get_filearea(), null, $file->get_filepath(),
-                        $file->get_filename())->out(false);
-                }
                 $filteredcourses[] = $cobject;
             }
         }
@@ -314,12 +355,8 @@ class get_filtered_courses extends external_api {
                     'categoryid' => new external_value(PARAM_INT, 'category id'),
                     'categoryname' => new external_value(PARAM_RAW, 'category name'),
                     'sortorder' => new external_value(PARAM_INT, 'Sort order in the category', VALUE_OPTIONAL),
-                    'summary' => new external_value(PARAM_RAW, 'summary'),
-                    'summaryformat' => new external_format_value('summary'),
                     'smallsummarytext' => new external_value(PARAM_RAW, 'smallsummarytext'),
-                    'summaryfiles' => new external_files('summary files in the summary field', VALUE_OPTIONAL),
-                    'overviewfiles' => new external_files('additional overview files attached to this course'),
-                    'contacts' => new external_multiple_structure(
+                    'managers' => new external_multiple_structure(
                         new external_single_structure(
                             array(
                                 'id' => new external_value(PARAM_INT, 'contact user id'),
@@ -327,10 +364,6 @@ class get_filtered_courses extends external_api {
                             )
                         ),
                         'contact users'
-                    ),
-                    'enrollmentmethods' => new external_multiple_structure(
-                        new external_value(PARAM_PLUGIN, 'enrollment method'),
-                        'enrollment methods list'
                     ),
                     'customfields' => new external_multiple_structure(
                         new external_single_structure(

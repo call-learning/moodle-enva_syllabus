@@ -16,10 +16,8 @@
 
 namespace local_envasyllabus\output;
 
-use context_user;
 use core_course\external\course_summary_exporter;
-use core_customfield\category;
-use core_customfield\field;
+use core_course_category;
 use local_competvetsuivi\matrix\matrix;
 use local_envasyllabus\visibility;
 use moodle_exception;
@@ -333,7 +331,7 @@ class course_syllabus implements renderable, templatable {
      * @return mixed
      */
     protected function get_cf_displayable_info(string $cfname, array $cfdata, \renderer_base $output) {
-        if (!visibility::is_customfield_visible($cfname)) {
+        if (!visibility::is_syllabus_public_field($cfname)) {
             return '';
         }
         if (!empty($this->lang)) {
