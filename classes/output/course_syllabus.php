@@ -193,7 +193,7 @@ class course_syllabus implements renderable, templatable {
         [$where, $params] = $DB->get_in_or_equal($rolesname);
         $teacherroles = $DB->get_fieldset_select('role', 'id', 'shortname ' . $where, $params);
         if (!empty($teacherroles)) {
-            return get_role_users($teacherroles, \context_course::instance($courseid));
+            return get_role_users($teacherroles, \context_course::instance($courseid), true);
         } else {
             return [];
         }
@@ -341,6 +341,9 @@ class course_syllabus implements renderable, templatable {
             if ($cfdatacontroller->get_field()->get('shortname') == $cfname) {
                 $cffieldvalue = $cfdatacontroller->export_value($output);
             }
+        }
+        if(html_to_text($cffieldvalue) == '') {
+            return '';
         }
         return $cffieldvalue;
     }
