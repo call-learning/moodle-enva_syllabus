@@ -37,7 +37,7 @@ list($options, $unrecognized) = cli_get_params([
     'fielddefs' => __DIR__ . '/../tests/fixtures/customfields_defs.txt',
 ], [
     'h' => 'help',
-    'f' => 'fielddefs'
+    'f' => 'fielddefs',
 ]);
 
 $help =

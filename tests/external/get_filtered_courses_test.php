@@ -51,7 +51,7 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
                 'uc_acronyme' => 'ANAT ET',
                 'uc_annee' => '1',
                 'uc_semestre' => '1',
-            ]
+            ],
         ],
         [
             'visible' => 1,
@@ -64,7 +64,7 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
                 'uc_acronyme' => 'BVM',
                 'uc_annee' => '1',
                 'uc_semestre' => '1',
-            ]
+            ],
         ],
         [
             'visible' => 1,
@@ -77,7 +77,7 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
                 'uc_acronyme' => 'AND',
                 'uc_annee' => '1',
                 'uc_semestre' => '2',
-            ]
+            ],
         ],
         [
             'visible' => 1,
@@ -90,7 +90,7 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
                 'uc_acronyme' => 'IVE',
                 'uc_annee' => '1',
                 'uc_semestre' => '1',
-            ]
+            ],
         ],
         [
             'visible' => 1,
@@ -103,7 +103,7 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
                 'uc_acronyme' => 'SAS',
                 'uc_annee' => '2',
                 'uc_semestre' => '1',
-            ]
+            ],
         ],
         [
             'visible' => 1,
@@ -116,7 +116,7 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
                 'uc_acronyme' => 'LAM',
                 'uc_annee' => '2',
                 'uc_semestre' => '2',
-            ]
+            ],
         ],
         [
             'visible' => 1,
@@ -129,7 +129,7 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
                 'uc_acronyme' => 'VPH',
                 'uc_annee' => '2',
                 'uc_semestre' => '1',
-            ]
+            ],
         ],
         [
             'visible' => 1,
@@ -142,7 +142,7 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
                 'uc_acronyme' => 'VMIC',
                 'uc_annee' => '1',
                 'uc_semestre' => '2',
-            ]
+            ],
         ],
         [
             'visible' => 1,
@@ -155,7 +155,7 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
                 'uc_acronyme' => 'ABW',
                 'uc_annee' => '1',
                 'uc_semestre' => '2',
-            ]
+            ],
         ],
         [
             'visible' => 0,
@@ -168,8 +168,8 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
                 'uc_acronyme' => 'VPATH',
                 'uc_annee' => '1',
                 'uc_semestre' => '1',
-            ]
-        ]
+            ],
+        ],
     ];
     /**
      * @var array $categories all categories
@@ -212,7 +212,7 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
             foreach ($customfields as $key => $value) {
                 $cdef['customfields'][] = [
                     'shortname' => $key,
-                    'value' => $value
+                    'value' => $value,
                 ];
             }
             $course = $generator->create_course(
@@ -346,19 +346,19 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
      *
      * @return array[]
      */
-    public function sort_dataprovider() {
+    public static function sort_dataprovider(): array {
         return [
             'sort by year, descending' => [
                 'field' => 'uc_annee',
                 'order' => 'desc',
                 'expected' =>
-                    ['A2', 'A2', 'A1', 'A1', 'A1', 'A1', 'A1', 'A1', 'A1']
+                    ['A2', 'A2', 'A1', 'A1', 'A1', 'A1', 'A1', 'A1', 'A1'],
             ],
             'sort by year, ascending' => [
                 'field' => 'uc_annee',
                 'order' => 'asc',
                 'expected' =>
-                    ['A1', 'A1', 'A1', 'A1', 'A1', 'A1', 'A1', 'A2', 'A2']
+                    ['A1', 'A1', 'A1', 'A1', 'A1', 'A1', 'A1', 'A2', 'A2'],
             ],
         ];
     }
@@ -368,7 +368,7 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
      *
      * @return array[]
      */
-    public function filter_dataprovider() {
+    public static function filter_dataprovider(): array {
         return [
             'filter by year A1' => [
                 'filters' => [
@@ -384,8 +384,8 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
                 'expected' => [
                     'admin' => 7,
                     'user' => 6,
-                    'guest' => 6
-                ]
+                    'guest' => 6,
+                ],
             ],
             'filter by year A2' => [
                 'filters' => [
@@ -401,8 +401,8 @@ class get_filtered_courses_test extends \externallib_advanced_testcase {
                 'expected' => [
                     'admin' => 2,
                     'user' => 2,
-                    'guest' => 2
-                ]
+                    'guest' => 2,
+                ],
             ],
         ];
     }

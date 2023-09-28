@@ -73,7 +73,7 @@ class setup {
             }
             $field = array_combine($csvheader, $csvrowarray);
             $field = (object) $field;
-            $category = category::get_record(array('name' => $field->catname, 'component' => 'core_course'));
+            $category = category::get_record(['name' => $field->catname, 'component' => 'core_course']);
             if (!$category) {
                 // Create it.
                 $categoryrecord = (object) [
@@ -88,7 +88,7 @@ class setup {
                 $category->save();
             }
             $categorycontroller = category_controller::create($category->get('id'));
-            if ($rfield = field::get_record(array('categoryid' => $category->get('id'), 'shortname' => $field->shortname))) {
+            if ($rfield = field::get_record(['categoryid' => $category->get('id'), 'shortname' => $field->shortname])) {
                 unset($field->catname);
                 foreach ($field as $fname => $fvalue) {
                     $fvalue = trim($fvalue, '"');
@@ -104,7 +104,7 @@ class setup {
                     'type' => $field->type,
                     'description' => $field->description,
                     'sortorder' => $field->sortorder,
-                    'configdata' => $field->configdata
+                    'configdata' => $field->configdata,
                 ],
                     $categorycontroller);
                 $rfield->save();

@@ -61,19 +61,23 @@ class course_syllabus implements renderable, templatable {
                         ['type' => 'cf', 'fieldname' => 'uc_heures_tpa_etudiant'],
                         ['type' => 'cf', 'fieldname' => 'uc_heures_tc_etudiant'],
                         ['type' => 'cf', 'fieldname' => 'uc_heures_fmp_etudiant'],
-                    ]
+                    ],
                 ],
                 ['type' => 'categorysum', 'languagestring' => 'syllabuspage:student_total_hours_he', 'class' => 'highlighted-top',
                     'fields' => [
                         ['type' => 'cf', 'fieldname' => 'uc_heures_he_aas_etudiant'],
-
                         ['type' => 'cf', 'fieldname' => 'uc_heures_he_tpers_etudiant'],
-                    ]
+                    ],
                 ],
-            ]
+            ],
         ],
-        ['type' => 'cf', 'fieldname' => 'uc_ects',
-            'languagestring' => 'syllabuspage:student_ects', 'icon' => 'ects', 'class' => 'highlighted-top']
+        [
+            'type' => 'cf',
+            'fieldname' => 'uc_ects',
+            'languagestring' => 'syllabuspage:student_ects',
+            'icon' => 'ects',
+            'class' => 'highlighted-top',
+        ],
     ];
 
     /**
@@ -110,7 +114,7 @@ class course_syllabus implements renderable, templatable {
         $contextdata = new stdClass();
         $course = $DB->get_record('course', ['id' => $this->courseid]);
         $context = \context_course::instance($this->courseid);
-        $csexporter = new course_summary_exporter($course, array('context' => $context));
+        $csexporter = new course_summary_exporter($course, ['context' => $context]);
         $contextdata->coursedata = $csexporter->export($output);
 
         // Get custom field info.
@@ -135,7 +139,7 @@ class course_syllabus implements renderable, templatable {
         if ($canviewuseridentity) {
             $identityfields = array_flip(explode(',', $CFG->showuseridentity));
         } else {
-            $identityfields = array();
+            $identityfields = [];
         }
         if ($managers) {
             $managernames = [];
@@ -163,7 +167,7 @@ class course_syllabus implements renderable, templatable {
                 $teacher->useremail = ' ' . obfuscate_mailto($teacheruser->email, '');
             }
             if (user_can_view_profile($teacheruser, $course)) {
-                $teacher->userpicture = $output->user_picture($teacheruser, array('class' => 'userpicture'));
+                $teacher->userpicture = $output->user_picture($teacheruser, ['class' => 'userpicture']);
             }
             $contextdata->teachers[] = $teacher;
         }
@@ -172,7 +176,7 @@ class course_syllabus implements renderable, templatable {
         $contextdata->competencies = (object) [
             'graph' => empty($customfields['uc_nombre']) ? '' :
                 $this->get_graph_for_course($customfields['uc_nombre'], $matrixid, $output),
-            'description' => $this->get_cf_displayable_info('uc_competences', $cfdata, $output)
+            'description' => $this->get_cf_displayable_info('uc_competences', $cfdata, $output),
         ];
         $contextdata->prerequisites = $this->get_cf_displayable_info('uc_prerequis', $cfdata, $output);
         $contextdata->programme = $this->get_cf_displayable_info('uc_programme', $cfdata, $output);
@@ -342,7 +346,7 @@ class course_syllabus implements renderable, templatable {
                 $cffieldvalue = $cfdatacontroller->export_value($output);
             }
         }
-        if(html_to_text($cffieldvalue) == '') {
+        if (html_to_text($cffieldvalue) == '') {
             return '';
         }
         return $cffieldvalue;

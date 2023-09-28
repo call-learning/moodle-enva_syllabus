@@ -26,7 +26,7 @@ global $CFG, $DB, $PAGE;
 // Get submitted parameters.
 $courseid = required_param('id', PARAM_INT);
 
-if (!$course = $DB->get_record('course', array('id' => $courseid))) {
+if (!$course = $DB->get_record('course', ['id' => $courseid])) {
     throw new moodle_exception('invalidcourse', 'local_envasyllabus');
 }
 
@@ -46,7 +46,7 @@ if ($PAGE->user_allowed_editing()) {
             'id' => $courseid,
             'returnto' => 'url',
             'returnurl' => $currenturl->out_as_local_url(),
-            'sesskey' => sesskey()
+            'sesskey' => sesskey(),
         ],
             'id_tagshdr'),
         get_string('editcoursesettings', 'moodle'),

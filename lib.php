@@ -36,14 +36,14 @@ function local_envasyllabus_extend_navigation(global_navigation $navigation) {
         if ($context->contextlevel == CONTEXT_COURSE && $context->instanceid != SITEID) {
             $courseid = $context->instanceid;
             $node = $navigation->find($courseid, navigation_node::TYPE_COURSE);
-            $url = new moodle_url('/local/envasyllabus/syllabuspage.php', array('id' => $courseid));
+            $url = new moodle_url('/local/envasyllabus/syllabuspage.php', ['id' => $courseid]);
             $newnode = new navigation_node(
                 [
                     'text' => get_string('syllabuspage:menu', 'local_envasyllabus'),
                     'action' => $url,
                     'type' => navigation_node::TYPE_SETTING,
                     'icon' => new pix_icon('t/viewdetails', ''),
-                    'key' => 'envasyllabus'
+                    'key' => 'envasyllabus',
                 ]
             );
             $navigation->add_node($newnode);
@@ -56,7 +56,7 @@ function local_envasyllabus_extend_navigation(global_navigation $navigation) {
                 'action' => $url,
                 'type' => navigation_node::TYPE_SETTING,
                 'icon' => new pix_icon('t/viewdetails', ''),
-                'key' => 'catalogindex'
+                'key' => 'catalogindex',
             ]
         );
         $navigation->add_node($newnode);

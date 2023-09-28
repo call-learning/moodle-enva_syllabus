@@ -29,6 +29,6 @@ $plugin->release = '0.1.2';
 $plugin->version = 2023081201;
 $plugin->requires = 2020061500;
 $plugin->maturity = MATURITY_ALPHA;
-$plugin->dependencies = array(
+$plugin->dependencies = [
     'local_competvetsuivi' => ANY_VERSION,
-);
+];

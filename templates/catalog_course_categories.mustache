@@ -48,7 +48,7 @@
     {{/sortedCourses}}
 </div>
 {{#js}}
-    require(['theme_lambda/bootstrap'], function(bootstrap) {
-        jQuery('[data-toggle="popover"]').popover();
+    require(['theme_lambda/bootstrap', 'jquery'], function(bootstrap, $) {
+        $('[data-toggle="popover"]').popover();
     });
 {{/js}}

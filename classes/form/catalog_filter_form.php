@@ -49,7 +49,7 @@ class catalog_filter_form extends \moodleform {
      */
     const SORT_ORDER = [
         'asc',
-        'desc'
+        'desc',
     ];
 
     /**

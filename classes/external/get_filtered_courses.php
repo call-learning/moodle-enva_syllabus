@@ -71,7 +71,7 @@ class get_filtered_courses extends external_api {
     public static function execute($rootcategoryid, $currentlang = 'fr', $filters = null, $sort = []) {
         $paramstocheck = [
             'rootcategoryid' => $rootcategoryid,
-            'currentlang' => $currentlang
+            'currentlang' => $currentlang,
         ];
         if ($filters) {
             $paramstocheck['filters'] = $filters;
@@ -154,9 +154,9 @@ class get_filtered_courses extends external_api {
                                     [
                                         'field' => new external_value(PARAM_ALPHANUMEXT, 'field name'),
                                         'value' => new external_value(PARAM_RAW, 'field value'),
-                                    ]
-                                )
-                            ]
+                                    ],
+                                ),
+                            ],
                         ),
                         'Filters',
                         VALUE_DEFAULT,
@@ -169,7 +169,7 @@ class get_filtered_courses extends external_api {
                             'order' => new external_value(PARAM_ALPHA, 'asc or desc'),
                         ],
                         'Sort',
-                        VALUE_OPTIONAL
+                        VALUE_OPTIONAL,
                     ),
             ]
         );
@@ -213,7 +213,7 @@ class get_filtered_courses extends external_api {
             $course->managers = array_map(function($manager) {
                 return [
                     'id' => $manager->id,
-                    'fullname' => $manager->fullname
+                    'fullname' => $manager->fullname,
                 ];
             }, $course->managers);
             $courses[$cid] = $course;
@@ -258,7 +258,7 @@ class get_filtered_courses extends external_api {
                         'type' => $cfdatacontroller->get_field()->get('type'),
                         'value' => $cfdatacontroller->export_value(),
                         'name' => $cfdatacontroller->get_field()->get('name'),
-                        'shortname' => $fieldshortname
+                        'shortname' => $fieldshortname,
                     ];
                 }
             }
@@ -358,25 +358,26 @@ class get_filtered_courses extends external_api {
                     'smallsummarytext' => new external_value(PARAM_RAW, 'smallsummarytext'),
                     'managers' => new external_multiple_structure(
                         new external_single_structure(
-                            array(
+                            [
                                 'id' => new external_value(PARAM_INT, 'contact user id'),
                                 'fullname' => new external_value(PARAM_NOTAGS, 'contact user fullname'),
-                            )
+                            ]
                         ),
                         'contact users'
                     ),
                     'customfields' => new external_multiple_structure(
                         new external_single_structure(
-                            array(
+                            [
                                 'name' => new external_value(PARAM_RAW, 'The name of the custom field'),
                                 'shortname' => new external_value(PARAM_RAW,
                                     'The shortname of the custom field - to be able to build the field class in the code'),
                                 'type' => new external_value(PARAM_ALPHANUMEXT,
                                     'The type of the custom field - text field, checkbox...'),
                                 'value' => new external_value(PARAM_RAW, 'The value of the custom field'),
-                            )
-                        ), 'Custom fields', VALUE_OPTIONAL),
-                    'courseimageurl' => new external_value(PARAM_URL, 'image url', VALUE_OPTIONAL)
+                            ]
+                        ),
+                        'Custom fields', VALUE_OPTIONAL),
+                    'courseimageurl' => new external_value(PARAM_URL, 'image url', VALUE_OPTIONAL),
                 ]
             )
         );

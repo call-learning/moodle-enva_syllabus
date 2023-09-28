@@ -49,7 +49,7 @@ class visibility {
         'uc_competences',
         'uc_competences_en',
         'uc_infos_compl',
-        'uc_infos_compl_en'
+        'uc_infos_compl_en',
     ];
 
     /**

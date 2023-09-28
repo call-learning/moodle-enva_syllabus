@@ -69,7 +69,7 @@ class language_switcher implements renderable, templatable {
         $pixiconout = $output->render($pixicon);
         $singleselect = new \single_select($this->currenturl, self::LANG_PARAMETER_NAME, [
             'fra' => get_string('syllabus:lang:system', 'local_envasyllabus'),
-            'en' => get_string('syllabus:lang:english', 'local_envasyllabus')
+            'en' => get_string('syllabus:lang:english', 'local_envasyllabus'),
         ], $this->currentlang, null
         );
         $singleselect->set_label($pixiconout);
