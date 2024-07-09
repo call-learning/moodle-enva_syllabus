@@ -30,9 +30,9 @@
 }}
 
 <div class="local-envasyllabus-course-syllabus">
-    <div class="syllabus-title-area m-y-2">
-        <h3 class="syllabus-title">{{#str}}syllabuspage:title, local_envasyllabus{{/str}}</h3>
-        <div class="syllabus-fullname text-black-50">{{coursedata.displayname}}</div>
+    <div class="syllabus-title-area my-4">
+        <h1>{{#str}}syllabuspage:title, local_envasyllabus{{/str}}</h1>
+        <div class="syllabus-fullname">{{coursedata.displayname}}</div>
         <div class="syllabus-resp text-light">
             {{#str}}syllabuspage:manager, local_envasyllabus{{/str}}: {{{managers}}}
         </div>
@@ -44,23 +44,21 @@
         {{$type}}teachers{{/type}}
         {{$title}}{{#str}}syllabuspage:teachers, local_envasyllabus{{/str}}{{/title}}
         {{$content}}
-            {{#teachers}}
-                <div class="w-25">
-                    <div class="d-flex p-1">
-                        <div>
-                            {{#userpicture}}
-                                <div class="myprofileitem picture">
-                                    {{{ userpicture }}}
-                                </div>
+            <div class="d-flex">
+                {{#teachers}}
+                    <div class="media teacherbox">
+                        {{#userpicture}}
+                            <div class="d-flex align-items-center align-self-stretch userpicture">
+                                {{{ userpicture }}}
+                            </div>
                             {{/userpicture}}
-                        </div>
-                        <div class="d-flex flex-column">
+                        <div class="media-body">
                             <div>{{ userfullname }}</div>
                             <div>{{{ useremail }}}</div>
                         </div>
                     </div>
-                </div>
-            {{/teachers}}
+                {{/teachers}}
+            </div>
         {{/content}}
     {{/local_envasyllabus/course_syllabus_collapsible}}
     {{<local_envasyllabus/course_syllabus_collapsible}}

@@ -1,0 +1,114 @@
+/* Competencies style */
+#page-local-envasyllabus-syllabuspage {
+    .small-doghnut-legend,
+    .small-doghnut {
+        width: 100% !important;
+    }
+}
+
+/* Course page */
+.local-envasyllabus-course-syllabus {
+    .syllabus-title {
+        font-weight: bold;
+        font-size: x-large;
+    }
+
+    .syllabus-header-img {
+        max-height: 400px;
+        max-width: 450px;
+    }
+
+    .syllabus-data {
+        line-height: normal;
+        width: auto;
+        td {
+            border-top: none;
+            padding: 4px 8px;
+
+            &.data-value {
+                text-align: right;
+            }
+        }
+        tr.highlighted-top {
+            td {
+                font-size: large;
+                font-weight: bolder;
+                padding: 0em 8px 1em;
+            }
+        }
+
+        tr.highlighted-bottom td {
+            font-size: large;
+            font-weight: bolder;
+            padding: 1em 8px 0em;
+        }
+    }
+
+    .syllabus-resp {
+        padding: 0.5em 0em 2em;
+    }
+
+    .syllabus-fullname {
+        font-size: 1.2rem;
+        padding-top: .75em;
+    }
+
+    .syllabus-summary {
+        margin: 1em auto;
+    }
+
+    .graph-header-title {
+        display: none;
+    }
+
+    .syllabus-desc-container {
+
+        table {
+            width: 100%;
+            margin-bottom: 20px;
+            max-width: 100%;
+            background-color: transparent;
+            border-collapse: collapse;
+            border-spacing: 0;
+
+            td {
+                padding: 8px;
+                line-height: 20px;
+                text-align: left;
+                vertical-align: top;
+                border-top: 1px solid #ddd;
+            }
+        }
+
+        h4 {
+            display: block;
+            width: 100%;
+        }
+    }
+}
+
+/* Catalog page */
+.local-envasyllabus-ccat {
+    .cshortname {
+        margin-top: -1.5em;
+    }
+
+    .course-card {
+        min-height: 25em;
+        background: #ffffff;
+
+        .card-img-top {
+            height: 200px;
+            width: 100%;
+        }
+    }
+
+    .course-img {
+        background-size: cover;
+    }
+
+    .view-course img {
+        width: 1.5em;
+        height: 1.5em;
+    }
+}

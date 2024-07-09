@@ -101,8 +101,8 @@ class catalog_filter_form extends \moodleform {
         $field = field::get_record(['shortname' => $cfsname]);
         $controller = field_controller::create($field->get('id'));
         $options = [];
-        if (method_exists($controller, 'get_options_array')) {
-            $options = \customfield_select\field_controller::get_options_array($controller);
+        if (method_exists($controller, 'get_options')) {
+            $options = $controller->get_options();
         };
         $options = array_combine($options, $options);
         return $options;

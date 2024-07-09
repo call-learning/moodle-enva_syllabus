@@ -30,15 +30,15 @@
     {{#sortedCourses}}
         {{#semesters}}
             {{#semester}}
-            <h3 class="text-center">{{#str}}
+            <h3 class="text-center mb-3">{{#str}}
                 course_semester, local_envasyllabus, { "semester": {{#quote}}{{semester}}{{/quote}}, "year": {{#quote}}{{year}}{{/quote}} } {{/str}}</h3>
             {{/semester}}
             {{^semester}}
                 <h3 class="text-center">{{#str}}
                     course_no_semester, local_envasyllabus, {{year}} {{/str}}</h3>
             {{/semester}}
-            <div class="card-group container" role="list">
-                <div class="row-fluid">
+            <div class="card-group container-fluid p-0" role="list">
+                <div class="row no-gutters w-100 mb-4">
                     {{#courses}}
                     {{>local_envasyllabus/catalog_course}}
                     {{/courses}}

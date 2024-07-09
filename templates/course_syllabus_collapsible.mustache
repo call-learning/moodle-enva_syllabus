@@ -36,13 +36,31 @@
   }
 
 }}
-<div class="course-syllabus-collapsible">
-    <h3 class="syllabus-title headline-v2 p-1 px-2" data-toggle="collapse" data-target="#{{$id}}{{/id}}" aria-expanded="true" aria-controls="{{$id}}{{/id}}">
-        <span class="title-caret mr-3"></span><span>{{$title}}{{/title}}</span>
-    </h3>
-    <div class="container syllabus-desc-container {{$type}}{{/type}}-container" id="{{$id}}{{/id}}">
-        <div class="d-flex flex-wrap align-content-around">
-            {{$content}}{{/content}}
+<div class="course-syllabus-collapsible mb-4">
+    <div class="d-flex position-relative align-items-center">
+        <a role="button" data-toggle="collapse"
+            href="#syllabuscollapse{{$id}}{{/id}}"
+            id="collapsereport{{$id}}{{/id}}"
+            aria-expanded="{{^contentcollapsed}}true{{/contentcollapsed}}{{#contentcollapsed}}false{{/contentcollapsed}}"
+            aria-controls="syllabuscollapse{{$id}}{{/id}}"
+            class="btn btn-icon mr-1 icons-collapse-expand justify-content-center stretched-link
+                {{#contentcollapsed}} collapsed {{/contentcollapsed}}"
+            aria-label="{{title}}">
+            <span class="expanded-icon icon-no-margin p-2" title="{{#str}} collapse, core {{/str}}">
+                {{#pix}} t/expandedchevron, core {{/pix}}
+            </span>
+            <span class="collapsed-icon icon-no-margin p-2" title="{{#str}} expand, core {{/str}}">
+                <span class="dir-rtl-hide">{{#pix}} t/collapsedchevron, core {{/pix}}</span>
+                <span class="dir-ltr-hide">{{#pix}} t/collapsedchevron_rtl, core {{/pix}}</span>
+            </span>
+        </a>
+        <h1 data-toggle="collapse" data-target="#{{$id}}{{/id}}" aria-expanded="true" aria-controls="{{$id}}{{/id}}">
+            <span>{{$title}}{{/title}}</span>
+        </h1>
+    </div>
+    <div class="collapse show syllabus-desc-container {{$type}}{{/type}}-container" id="syllabuscollapse{{$id}}{{/id}}">
+        <div class="d-flex flex-column">
+        {{$content}}{{/content}}
         </div>
     </div>
 </div>

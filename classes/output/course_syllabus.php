@@ -197,7 +197,9 @@ class course_syllabus implements renderable, templatable {
         [$where, $params] = $DB->get_in_or_equal($rolesname);
         $teacherroles = $DB->get_fieldset_select('role', 'id', 'shortname ' . $where, $params);
         if (!empty($teacherroles)) {
-            return get_role_users($teacherroles, \context_course::instance($courseid), true);
+            $userfieldsapi = \core_user\fields::for_userpic()->including('username', 'deleted');
+            $userfields = 'ra.id, u.id, u.username' . $userfieldsapi->get_sql('u')->selects;
+            return get_role_users($teacherroles, \context_course::instance($courseid), true, $userfields);
         } else {
             return [];
         }
