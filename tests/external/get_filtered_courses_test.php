@@ -13,14 +13,12 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 namespace local_envasyllabus\external;
 
-use external_api;
-
-defined('MOODLE_INTERNAL') || die();
-
 global $CFG;
+
+use core_external\external_api;
+
 require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 
 /**
@@ -29,7 +27,7 @@ require_once($CFG->dirroot . '/webservice/tests/helpers.php');
  * @package     local_envasyllabus
  * @copyright   2022 CALL Learning - Laurent David <laurent@call-learning>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers \local_envasyllabus\get_filtered_courses
+ * @covers \local_envasyllabus\external\get_filtered_courses
  */
 class get_filtered_courses_test extends \externallib_advanced_testcase {
     /**

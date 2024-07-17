@@ -16,25 +16,24 @@
 
 namespace local_envasyllabus\external;
 
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-require_once($CFG->libdir . '/externallib.php');
-require_once($CFG->dirroot . '/course/externallib.php');
-
 use cache;
 use context_course;
 use context_system;
 use core_course_category;
+use core_external\external_api;
+use core_external\external_description;
+use core_external\external_function_parameters;
+use core_external\external_multiple_structure;
+use core_external\external_single_structure;
+use core_external\external_value;
 use Exception;
-use external_api;
-use external_description;
-use external_function_parameters;
-use external_multiple_structure;
-use external_single_structure;
-use external_value;
 use local_envasyllabus\visibility;
 use moodle_url;
+
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once($CFG->dirroot . '/course/externallib.php');
 
 /**
  * External services
@@ -210,12 +209,16 @@ class get_filtered_courses extends external_api {
                     $file->get_filearea(), null, $file->get_filepath(),
                     $file->get_filename())->out(false);
             }
-            $course->managers = array_map(function($manager) {
-                return [
-                    'id' => $manager->id,
-                    'fullname' => $manager->fullname,
-                ];
-            }, $course->managers);
+            if (!empty($course->managers)) {
+                $course->managers = array_map(function($manager) {
+                    return [
+                        'id' => $manager->id,
+                        'fullname' => $manager->fullname,
+                    ];
+                }, $course->managers);
+            } else {
+                $course->managers = [];
+            }
             $courses[$cid] = $course;
         }
         self::map_customfiedls($courses);
