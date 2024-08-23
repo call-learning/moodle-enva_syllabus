@@ -88,6 +88,7 @@
 .local-envasyllabus-ccat .course-card {
     min-height: 25em;
     background: #ffffff;
+    margin-bottom: 0.5em;
 }
 
 .local-envasyllabus-ccat .course-card .card-img-top {
