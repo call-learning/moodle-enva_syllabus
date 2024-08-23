@@ -35,7 +35,7 @@ class hook_callbacks {
         global $PAGE;
 
 
-        if (!isguestuser() && isloggedin()) {
+        if (!isguestuser() && !isloggedin()) {
             return;
         }
 

@@ -28,11 +28,12 @@ import Config from 'core/config';
  * @param {number} courseId
  */
 export const init = (courseId) => {
-    const summaryTag = document.querySelector('.content .summary, .content .summarytext .no-overflow');
+    const summaryTag = document.querySelector('.header-actions-container');
     const url = Config.wwwroot + '/local/envasyllabus/syllabuspage.php?id=' + courseId;
     Templates.render('local_envasyllabus/syllabus_button', {
         url: url
     }).then((html, js) => {
         Templates.appendNodeContents(summaryTag, html, js);
+        return '';
     }).catch(displayException);
 };
