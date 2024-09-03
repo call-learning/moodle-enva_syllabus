@@ -15,7 +15,7 @@
    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
  }}
 {{!
-  @template local_envasyllabus/course_syllabus
+  @template local_envasyllabus/course_syllabus_header
 
   Syllabus template
   The purpose of this template is to output the syllabus of a course
@@ -28,20 +28,18 @@
 
 }}
 
-<div class="local-envasyllabus-course-syllabus-header container">
-    <div class="d-flex">
-        <div class="m-x-4">
-            <img class="img-fluid syllabus-header-img" src="{{coursedata.courseimage}}" alt="{{coursedata.fullname}}">
-        </div>
-        <div class="flex-grow-1 m-l-2">
-            <table class="table table-borderless syllabus-data">
-                {{#headerdata}}
-                    <tr class="{{class}}">
-                        <td class="data-label">{{#icon}}{{#pix}}{{.}}, local_envasyllabus, {{title}}{{/pix}}{{/icon}}{{title}}</td>
-                        <td class="data-value">{{value}}</td>
-                    </tr>
-                {{/headerdata}}
-            </table>
-        </div>
+<div class="local-envasyllabus-course-syllabus-header d-flex">
+    <div class="mr-3">
+        <img class="img-fluid syllabus-header-img" src="{{coursedata.courseimage}}" alt="{{coursedata.fullname}}">
+    </div>
+    <div class="flex-grow-1 ml-2">
+        <table class="table table-borderless syllabus-data">
+            {{#headerdata}}
+                <tr class="{{class}}">
+                    <td class="data-label">{{#icon}}{{#pix}}{{.}}, local_envasyllabus, {{title}}{{/pix}}{{/icon}}{{title}}</td>
+                    <td class="data-value">{{value}}</td>
+                </tr>
+            {{/headerdata}}
+        </table>
     </div>
 </div>

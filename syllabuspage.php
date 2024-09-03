@@ -38,8 +38,8 @@ global $OUTPUT, $SESSION, $USER;
 $currenturl = new moodle_url('/local/envasyllabus/syllabuspage.php', ['id' => $courseid]);
 $PAGE->set_title($title);
 $PAGE->set_url($currenturl);
-$PAGE->set_heading($title);
 $PAGE->set_context(context_course::instance($courseid));
+$PAGE->set_secondary_navigation(false);
 if ($PAGE->user_allowed_editing()) {
     $editcoursebutton = new single_button(
         new moodle_url('/course/edit.php', [

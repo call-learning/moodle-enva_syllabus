@@ -30,11 +30,11 @@
         "currentlang": "en"
     }
 }}
-<div class="local-envasyllabus-catalog-course col-3 span3 course-outer-card">
-    <div class="card course-card d-flex flex-column" role="listitem" data-course-id="{{{id}}}">
-        <div class="card-img-top card-img course-img" style="background-image: url({{courseimageurl}})">
+<div class="local-envasyllabus-catalog-course col-6 col-md-4 col-xl-3">
+    <div class="card course-card mx-2" role="listitem" data-course-id="{{{id}}}">
+        <div class="card-img-top course-img" style="background-image: url({{courseimageurl}})">
           <span class="sr-only">
-              {{#str}}aria:courseimage, core_course{{/str}}
+              {{#str}}aria:courseimage, local_envasyllabus{{/str}}
           </span>
         </div>
         <div class="text-muted muted d-flex mb-1 flex-wrap">
@@ -48,18 +48,11 @@
         <div class="card-body p-2 flex-grow-1 d-flex flex-column" id="course-info-container-{{id}}">
             <div class="d-flex align-items-start p-b-1 flex-grow-1">
                 <div class="w-100 text-wrap">
-                                            <span class="sr-only ">
-                                                {{#str}}aria:coursename, core_course{{/str}}
-                                            </span>
+                    <span class="sr-only ">
+                        {{#str}}aria:coursename, core_course{{/str}}
+                    </span>
                     <span class="font-weight-bold">
                         {{{displayname}}}
-                        <a data-toggle="popover" data-placement="top" class="course-info-popover"
-                           title="{{#str}}course:summary, local_envasyllabus{{/str}}"
-                           data-content="{{smallsummarytext}}"
-                           data-trigger="click hover focus"
-                           href="#"
-                           role="button"
-                        >{{#pix}}i/info, core, {{#str}}info{{/str}}{{/pix}}</a>
                     </span>
                     {{^visible}}
                         <div class="d-flex flex-wrap">
@@ -69,8 +62,8 @@
                 </div>
             </div>
         </div>
-        <div class="align-self-end text-light d-flex p-2">
-            <div class="flex-grow-1">
+        <div class="card-footer text-muted d-flex">
+            <div class="d-flex flex-grow-1 align-items-center">
                 {{#cf.uc_total_heures_enseignants.value}}
                     <span>
                         <i class="icon text-primary fa fa-clock-o" title="{{cf.uc_total_heures_enseignants.name}}">
@@ -86,8 +79,8 @@
                     </span>
                 {{/cf.uc_ects.value}}
             </div>
-            <div class="align-self-end view-course-icon">
-                <a href="{{syllabusurl}}" class="icon-super-size">{{#pix}}i/arrowview, local_envasyllabus, {{#str}}view{{/str}}{{/pix}}</a>
+            <div class="d-flex align-items-center view-course-icon">
+                <a href="{{syllabusurl}}" class="stretched-link icon-super-size icon-size-4">{{#pix}}i/arrowview, local_envasyllabus, {{#str}}view{{/str}}{{/pix}}</a>
             </div>
         </div>
     </div>

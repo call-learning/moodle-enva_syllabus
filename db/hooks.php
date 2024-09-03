@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - https://moodle.org/
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,23 +12,22 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Hook callbacks for ENVA Syllabus
  *
- * @package     local_envasyllabus
- * @copyright   2022 CALL Learning - Laurent David <laurent@call-learning>
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    local_envasyllabus
+ * @copyright  2024 Bas Brands <bas@sonsbeekmedia.nl>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_envasyllabus';
-$plugin->release = '0.1.2';
-$plugin->version = 2023081202;
-$plugin->requires = 2020061500;
-$plugin->maturity = MATURITY_ALPHA;
-$plugin->dependencies = [
-    'local_competvetsuivi' => ANY_VERSION,
+$callbacks = [
+    [
+        'hook' => \core\hook\output\before_standard_top_of_body_html_generation::class,
+        'callback' => \local_envasyllabus\hook_callbacks::class . '::before_standard_top_of_body_html_generation',
+        'priority' => 0,
+    ],
 ];
