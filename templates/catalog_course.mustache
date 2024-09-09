@@ -72,15 +72,14 @@
                     </span>
                 {{/cf.uc_total_heures_enseignants.value}}
                 {{#cf.uc_ects.value}}
-                    <span>
-                        <i class="icon text-primary fa fa-trophy" title="{{cf.uc_ects.name}}">
-                        </i>
+                    <span class="d-flex align-items-center">
+                        {{#pix}}ects, local_envasyllabus, {{#str}}syllabuspage:student_ects, local_envasyllabus{{/str}}{{/pix}}
                         {{#str}}coursecard:credits, local_envasyllabus, {{cf.uc_ects.value}}{{/str}}
                     </span>
                 {{/cf.uc_ects.value}}
             </div>
             <div class="d-flex align-items-center view-course-icon">
-                <a href="{{syllabusurl}}" class="stretched-link icon-super-size icon-size-4">{{#pix}}i/arrowview, local_envasyllabus, {{#str}}view{{/str}}{{/pix}}</a>
+                <a href="{{syllabusurl}}" class="stretched-link icon-super-size icon-size-4 d-flex align-items-center">{{#pix}}i/arrowview, local_envasyllabus, {{#str}}view{{/str}}{{/pix}}</a>
             </div>
         </div>
     </div>
