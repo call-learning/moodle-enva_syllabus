@@ -45,11 +45,6 @@
     padding: 0.5em 0em 2em;
 }
 
-.local-envasyllabus-course-syllabus .syllabus-fullname {
-    font-size: 1.2rem;
-    padding-top: .75em;
-}
-
 .local-envasyllabus-course-syllabus .syllabus-summary {
     margin: 1em auto;
 }
@@ -88,7 +83,6 @@
 .local-envasyllabus-ccat .course-card {
     min-height: 25em;
     background: #ffffff;
-    margin-bottom: 0.5em;
 }
 
 .local-envasyllabus-ccat .course-card .card-img-top {
