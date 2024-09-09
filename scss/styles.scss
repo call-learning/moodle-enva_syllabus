@@ -14,8 +14,10 @@
     }
 
     .syllabus-header-img {
-        max-height: 400px;
-        max-width: 450px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 300px;
     }
 
     .syllabus-data {

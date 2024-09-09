@@ -28,12 +28,14 @@
 
 }}
 
-<div class="local-envasyllabus-course-syllabus-header d-flex">
-    <div class="mr-3">
-        <img class="img-fluid syllabus-header-img" src="{{coursedata.courseimage}}" alt="{{coursedata.fullname}}">
+<div class="local-envasyllabus-course-syllabus-header d-flex mb-5 row no-gutters">
+    <div class="mr-3 syllabus-header-img col-12 col-lg-6 mb-3 mb-lg-0" style="background-image: url('{{coursedata.courseimage}}');">
+        <span class="sr-only">
+            {{coursedata.fullname}}
+        </span>
     </div>
-    <div class="flex-grow-1 ml-2">
-        <table class="table table-borderless syllabus-data">
+    <div class="ml-lg-2">
+        <table class="table table-borderless syllabus-data mb-0">
             {{#headerdata}}
                 <tr class="{{class}}">
                     <td class="data-label">{{#icon}}{{#pix}}{{.}}, local_envasyllabus, {{title}}{{/pix}}{{/icon}}{{title}}</td>
