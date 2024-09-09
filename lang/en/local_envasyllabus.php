@@ -82,3 +82,4 @@ $string['syllabuspage:program'] = 'Program';
 $string['syllabuspage:vaq'] = 'Validation of prior learning';
 $string['syllabuspage:additionalinfos'] = 'Additional information';
 $string['aria:courseimage'] = 'Course image';
+$string['summary'] = 'Summary';

@@ -80,3 +80,4 @@ $string['syllabuspage:prerequisites'] = 'Pré-requis';
 $string['syllabuspage:program'] = 'Programme';
 $string['syllabuspage:vaq'] = 'Validation des acquis';
 $string['syllabuspage:additionalinfos'] = 'Information complémentaires';
+$string['summary'] = 'Résumé';
