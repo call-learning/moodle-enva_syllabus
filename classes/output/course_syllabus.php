@@ -179,7 +179,7 @@ class course_syllabus implements renderable, templatable {
             'description' => $this->get_cf_displayable_info('uc_competences', $cfdata, $output),
         ];
         $contextdata->prerequisites = $this->get_cf_displayable_info('uc_prerequis', $cfdata, $output);
-        $contextdata->programme = $this->get_cf_displayable_info('uc_programme', $cfdata, $output);
+        $contextdata->programme = $this->get_cf_displayable_info('programme', $cfdata, $output);
         $contextdata->vaq = $this->get_cf_displayable_info('uc_validation', $cfdata, $output);
         $contextdata->additionalinfos = $this->get_cf_displayable_info('uc_infos_compl', $cfdata, $output);
         return $contextdata;
